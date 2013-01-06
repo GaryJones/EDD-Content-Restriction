@@ -1,0 +1,79 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: EDD Content Restriction\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-09-14 13:25-0600\n"
+"PO-Revision-Date: 2012-09-14 13:25-0600\n"
+"Last-Translator: Pippin Williamson <pippin@pippinsplugins.com>\n"
+"Language-Team: Pippin Williamson <pippin@pippinsplugins.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;_e;__;_x;_n\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: United States\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../includes/metabox.php:21
+#, php-format
+msgid "Restrict this content to buyers of a %s."
+msgstr ""
+
+#: ../includes/metabox.php:23
+msgid "Not Restricted"
+msgstr ""
+
+#: ../includes/metabox.php:33
+msgid "All Prices"
+msgstr ""
+
+#: ../includes/bbpress.php:52
+#, php-format
+msgid "This content is restricted to buyers of %s %s."
+msgstr ""
+
+#: ../includes/bbpress.php:58
+#: ../includes/functions.php:62
+#, php-format
+msgid "This content is restricted to buyers of %s."
+msgstr ""
+
+#: ../includes/bbpress.php:128
+msgid "Topic creation is restricted to buyers."
+msgstr ""
+
+#: ../includes/bbpress.php:138
+msgid "This forum is restricted to buyers."
+msgstr ""
+
+#: ../includes/bbpress.php:141
+msgid "Only buyers can create topics."
+msgstr ""
+
+#: ../includes/settings.php:17
+msgid "Content Restriction"
+msgstr ""
+
+#: ../includes/settings.php:24
+msgid "License Key"
+msgstr ""
+
+#: ../includes/settings.php:25
+msgid "Enter your license for Content Restriction to receive automatic upgrades"
+msgstr ""
+
+#: ../includes/functions.php:45
+msgid "This content is restricted to buyers."
+msgstr ""
+
+#: ../includes/functions.php:56
+#, php-format
+msgid "This content is restricted to buyers of the %s for %s."
+msgstr ""
+
+#: ../includes/functions.php:94
+msgid "All prices"
+msgstr ""
+
