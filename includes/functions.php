@@ -43,6 +43,8 @@ function edd_cr_filter_restricted_content( $content, $download_id, $price_id = n
 		$single_message .= '</div>';
 	}
 
+	$message = $single_message;
+
 	if ( is_array( $download_id ) ) {
 
 		foreach ( $download_id as $id ) {
