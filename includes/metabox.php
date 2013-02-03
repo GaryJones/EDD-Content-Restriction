@@ -39,6 +39,7 @@ function edd_cr_submitbox() {
 						}
 					echo '</select>';
 				}
+				do_action( 'edd_cr_metabox', $post->ID, $restricted_to, $restricted_variable );
 				echo '</div>';
 				echo wp_nonce_field( 'edd-cr-nonce', 'edd-cr-nonce' );
 			echo '</div>';
