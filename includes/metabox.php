@@ -61,6 +61,8 @@ function edd_cr_save_meta_data( $post_id ) {
 			update_post_meta( $post_id, '_edd_cr_restricted_to_variable', $price_option );
 		}
 
+		do_action( 'edd_cr_save_meta_data', $post_id, $_POST );
+
 	}
 }
 add_action( 'save_post', 'edd_cr_save_meta_data' );
