@@ -33,6 +33,8 @@ function edd_cr_filter_replies( $content, $reply_id ) {
 	if ( current_user_can( 'manage_options' ) )
 		return $content;
 
+	$has_access = true;
+
 	$restricted_to = edd_cr_is_restricted( bbp_get_topic_id() );
 
 	$restricted_id = bbp_get_topic_id();
@@ -45,8 +47,10 @@ function edd_cr_filter_replies( $content, $reply_id ) {
 
 	$restricted_variable = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
 
-	if ( $restricted_to && !edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) ) {
+	$is_restricted = ( $restricted_to && !edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) );
+	$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted_id, $restricted_to, $user_ID, $restricted_variable );
 
+	if( $is_restricted ) {
 
 		if ( $restricted_variable ) {
 			$return = '<div class="edd_cr_message">' . sprintf( __( 'This content is restricted to buyers of %s %s.', 'edd_cr' ),
@@ -76,18 +80,22 @@ function edd_cr_hide_new_topic_form( $can_access ) {
 	if ( current_user_can( 'manage_options' ) )
 		return $can_access;
 
+	$is_restricted = false;
+
 	$restricted_to = edd_cr_is_restricted( bbp_get_forum_id() ); // check for parent forum restriction
 	$restricted_id = bbp_get_forum_id();
-
 
 	$restricted_variable = get_post_meta( $restricted_id, '_edd_cr_restricted_to_variable', true ); // for variable prices
 
 	$restricted_variable = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
 
-	if ( $restricted_to && !edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) ) {
-		$can_access = false;
+	if ( $restricted_to && ! edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) ) {
+		$is_restricted = true;
 	}
-	return $can_access;
+
+	$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted_id, $restricted_to, $user_ID, $restricted_variable );
+
+	return $is_restricted ? false : true;
 }
 add_filter( 'bbp_current_user_can_access_create_topic_form', 'edd_cr_hide_new_topic_form' );
 
@@ -98,6 +106,8 @@ function edd_cr_hide_new_replies_form( $can_access ) {
 
 	if ( current_user_can( 'manage_options' ) )
 		return $can_access;
+
+	$is_restricted = false;
 
 	$restricted_to = edd_cr_is_restricted( bbp_get_topic_id() );
 
@@ -112,10 +122,14 @@ function edd_cr_hide_new_replies_form( $can_access ) {
 
 	$restricted_variable = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
 
-	if ( $restricted_to && !edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) ) {
-		$can_access = false;
+	if ( $restricted_to && ! edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) ) {
+		$is_restricted = true;
 	}
-	return $can_access;
+
+	$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted_id, $restricted_to, $user_ID, $restricted_variable );
+
+	return $is_restricted ? false : true;
+
 }
 add_filter( 'bbp_current_user_can_access_create_reply_form', 'edd_cr_hide_new_replies_form' );
 add_filter( 'bbp_current_user_can_access_create_topic_form', 'edd_cr_hide_new_replies_form' ); // this is required for it to work with the default theme
