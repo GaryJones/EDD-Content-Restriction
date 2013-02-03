@@ -10,13 +10,19 @@ function edd_cr_filter_bbp_topics_list( $query ) {
 
 	if ( bbp_is_single_forum() ) {
 
+		$is_restricted = false;
+
 		$restricted_to = edd_cr_is_restricted( bbp_get_forum_id() );
 
 		$restricted_variable = get_post_meta( bbp_get_forum_id(), '_edd_cr_restricted_to_variable', true ); // for variable prices
 
 		$restricted_variable = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
 
-		if ( $restricted_to && !edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) ) {
+		$is_restricted = ( $restricted_to && !edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) );
+
+		$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, bbp_is_single_forum(), $restricted_to, $user_ID, $restricted_variable );
+
+		if ( $is_restricted ) {
 			return array(); // return an empty query
 		}
 	}
