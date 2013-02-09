@@ -40,7 +40,7 @@ function edd_cr_activate_license() {
 	if( ! isset( $_POST['edd_settings_misc']['edd_cr_license_key'] ) )
 		return;
 
-	if( get_option( 'edd_cr_license_active' ) == 'active' )
+	if( get_option( 'edd_cr_license_active' ) == 'valid' )
 		return;
 
 	$license = sanitize_text_field( $_POST['edd_settings_misc']['edd_cr_license_key'] );
