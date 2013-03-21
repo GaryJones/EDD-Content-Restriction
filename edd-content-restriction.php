@@ -17,9 +17,9 @@ if(!defined('EDD_CR_PLUGIN_URL')) {
 	define('EDD_CR_PLUGIN_URL', plugin_dir_url( __FILE__ ));
 }
 
-define( 'EDD_CR_STORE_API_URL', 'http://easydigitaldownloads.com' ); 
-define( 'EDD_CR_PRODUCT_NAME', 'Content Restriction' ); 
-define( 'EDD_CR_VERSION', '1.2' ); 
+define( 'EDD_CR_STORE_API_URL', 'http://easydigitaldownloads.com' );
+define( 'EDD_CR_PRODUCT_NAME', 'Content Restriction' );
+define( 'EDD_CR_VERSION', '1.2' );
 
 /*
 |--------------------------------------------------------------------------
@@ -69,7 +69,7 @@ function edd_cr_updater() {
 	$edd_cr_license_key = isset( $edd_options['edd_cr_license_key'] ) ? trim( $edd_options['edd_cr_license_key'] ) : '';
 
 	// setup the updater
-	$edd_cr_updater = new EDD_SL_Plugin_Updater( EDD_CR_STORE_API_URL, __FILE__, array( 
+	$edd_cr_updater = new EDD_SL_Plugin_Updater( EDD_CR_STORE_API_URL, __FILE__, array(
 			'version' 	=> EDD_CR_VERSION, 		// current version number
 			'license' 	=> $edd_cr_license_key, // license key (used get_option above to retrieve from DB)
 			'item_name' => EDD_CR_PRODUCT_NAME, // name of this plugin
