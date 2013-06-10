@@ -1,14 +1,25 @@
 <?php
+/**
+ * Settings
+ *
+ * @package		EDD Content Restriction
+ * @subpackage	Settings
+ * @copyright	Copyright (c) 2013, Pippin Williamson
+ * @since		1.1
+ */
+
+// Exit if accessed directly
+if( !defined( 'ABSPATH' ) ) exit;
+
 
 /**
  * Registers the new Content Restriction license options in Misc
- * *
+ *
  * @access      private
  * @since       1.1
  * @param 		$settings array the existing plugin settings
  * @return      array
 */
-
 function edd_cr_license_settings( $settings ) {
 
 	$license_settings = array(
@@ -32,6 +43,7 @@ function edd_cr_license_settings( $settings ) {
 
 }
 add_filter('edd_settings_misc', 'edd_cr_license_settings');
+
 
 function edd_cr_activate_license() {
 	global $edd_options;

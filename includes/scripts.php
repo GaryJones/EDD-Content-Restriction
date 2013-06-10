@@ -1,5 +1,24 @@
 <?php
+/**
+ * Scripts
+ *
+ * @package		EDD
+ * @subpackage	Scripts
+ * @copyright	Copyright (c) 2013, Pippin Williamson
+ * @since		1.0
+ */
 
+// Exit if accessed directly
+if( !defined( 'ABSPATH' ) ) exit;
+
+
+/**
+ * Enqueue scripts if necessary
+ *
+ * @since		1.0
+ * @global		$post
+ * @return		void
+ */
 function edd_cr_scripts() {
 	global $post;
 

@@ -1,5 +1,24 @@
 <?php
+/**
+ * Shortcodes
+ *
+ * @package		EDD Content Restriction
+ * @subpackage	Shortcodes
+ * @copyright	Copyright (c) 2013, Pippin Williamson
+ * @since		1.0
+ */
 
+// Exit if accessed directly
+if( !defined( 'ABSPATH' ) ) exit;
+
+
+/**
+ * Add edd_restrict shortcode
+ *
+ * @since		1.0
+ * @param		array $atts the attributes to pass to the shortcode
+ * @param		string $content
+ */
 function edd_cr_shortcode($atts, $content = null ) {
 	extract( shortcode_atts( array(
 			'id' => null,

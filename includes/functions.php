@@ -1,6 +1,25 @@
 <?php
+/**
+ * Functions
+ *
+ * @package		EDD Content Restriction
+ * @subpackage	Functions
+ * @copyright	Copyright (c) 2013, Pippin Williamson
+ * @since		1.0
+ */
+
+// Exit if accessed directly
+if( !defined( 'ABSPATH' ) ) exit;
 
 
+/**
+ * Filter content
+ *
+ * @since		1.0
+ * @global		$post
+ * @param		string $content the content to filter
+ * @return		string
+ */
 function edd_cr_filter_content( $content ) {
 
 	global $post;
@@ -19,6 +38,18 @@ function edd_cr_filter_content( $content ) {
 add_filter( 'the_content', 'edd_cr_filter_content' );
 
 
+/**
+ * Filter restricted content
+ *
+ * @since		1.0
+ * @global		$user_ID
+ * @param		string $content the content to filter
+ * @param		int $download_id the ID of the referenced download
+ * @param		int $price_id
+ * @param		string $message
+ * @param		int $post_id
+ * @return		string
+ */
 function edd_cr_filter_restricted_content( $content, $download_id, $price_id = null, $message = null, $post_id = 0 ) {
 
 	global $user_ID;
@@ -74,11 +105,22 @@ function edd_cr_filter_restricted_content( $content, $download_id, $price_id = n
 }
 
 
+/**
+ * Check if a post is restricted
+ *
+ * @since		1.0
+ * @param		int $post_id the ID of the post to check
+ */
 function edd_cr_is_restricted( $post_id ) {
 	return get_post_meta( $post_id, '_edd_cr_restricted_to', true );
 }
 
 
+/**
+ * Check post variations for restriction
+ *
+ * @since		1.0
+ */
 function edd_cr_check_for_variations() {
 
 	if ( isset( $_POST['nonce'] ) && wp_verify_nonce( $_POST['nonce'], 'edd-cr-nonce' ) ) {
