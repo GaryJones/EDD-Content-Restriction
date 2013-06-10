@@ -145,3 +145,126 @@ function edd_cr_check_for_variations() {
 
 }
 add_action( 'wp_ajax_edd_cr_check_for_variations', 'edd_cr_check_for_variations' );
+
+
+/**
+ * Add restricted content to confirmation page
+ *
+ * @since		1.3
+ * @param		array $edd_receipt_args
+ * @return		void
+ */
+function edd_cr_add_to_receipt( $payment, $edd_receipt_args ) {
+
+	// Get the array of restricted pages for this payment
+	$meta = edd_cr_get_restricted_pages( $edd_receipt_args );
+
+	// No pages? Quit!
+	if( empty( $meta ) ) return;
+
+	echo '</tbody></table><h3>' . __( 'Pages', 'edd_cr' ) . '</h3><table><tbody>';
+
+	echo '<tr><td>';
+	echo '<ul style="margin: 0; padding: 0;">';
+
+	foreach( $meta as $post ) {
+		echo '<li style="list-style: none; margin: 0 0 8px 10px;">';
+		echo '<a href="' . $post->guid . '" class="edd_download_file_link">' . $post->post_title . '</a>';
+		echo '</li>';
+	}
+
+	echo '</ul>';
+	echo '</td></tr>';
+}
+add_action( 'edd_payment_receipt_after', 'edd_cr_add_to_receipt', 1, 2 );
+
+
+/**
+ * Add email template tag
+ *
+ * @since		1.3
+ * @param		string $message the content of the email message
+ * @param		array $payment_data the information on this payment
+ * @param		int $payment_id the payment ID
+ * @return		string $message the updated email message
+ */
+function edd_cr_add_template_tags( $message, $payment_data, $payment_id ) {
+	// Get the array of restricted pages for this payment
+	$meta = edd_cr_get_restricted_pages( $payment_id );
+
+	// No pages? Quit!
+	if( empty( $meta ) ) return;
+
+	$file_list = '<li>' . __( 'Pages', 'edd_cr' ) . '<br/>';
+	$file_list .= '<ul>';
+
+	foreach( $meta as $post ) {
+		$file_list .= '<li><a href="' . $post->guid . '">' . $post->post_title . '</a></li>';
+	}
+
+	$file_list .= '</ul>';
+	$file_list .= '</li>';
+
+	$message = str_replace( '{page_list}', $file_list, $message );
+
+	return $message;
+}
+add_filter( 'edd_email_template_tags', 'edd_cr_add_template_tags', 200, 3 );
+
+
+/**
+ * Add email template tag to settings display
+ *
+ * @since		1.3
+ * @param		string $tags the current tag list
+ * @return		string $tags the modified tag list
+ */
+function edd_cr_add_template_tags_description( $tags ) {
+	$tags .= '<br/>{page_list} - ' . __( 'A list of pages unlocked through each download purchased', 'edd_cr' );
+
+	return $tags;
+}
+add_filter( 'edd_template_tags_description', 'edd_cr_add_template_tags_description', 200, 1 );
+
+
+/**
+ * Get pages restricted to the purchased files
+ *
+ * @since		1.3
+ * @access		public
+ * @param		mixed $payment_id
+ * @return		array $meta
+ */
+function edd_cr_get_restricted_pages( $payment_id ) {
+	if( is_array( $payment_id ) )
+		$payment_id = $payment_id['id'];
+
+	$files = edd_get_payment_meta_downloads( $payment_id );
+
+	$ids = wp_list_pluck( $files, 'id' );
+	$ids = array_unique( $ids );
+
+	$args = array(
+		'post_type'		=> 'any',
+		'meta_key'		=> '_edd_cr_restricted_to',
+		'meta_value'	=> $ids,
+		'meta_compare'	=> 'IN'
+	);
+
+	$meta_std = new WP_Query( $args );
+	$meta_std = $meta_std->posts;
+
+	$args = array(
+		'post_type'		=> 'any',
+		'meta_key'		=> '_edd_cr_restricted_to_variable',
+		'meta_value'	=> $ids,
+		'meta_compare'	=> 'IN'
+	);
+
+	$meta_var = new WP_Query( $args );
+	$meta_var = $meta_var->posts;
+
+	$meta = array_merge( $meta_std, $meta_var );
+
+	return $meta;
+}
