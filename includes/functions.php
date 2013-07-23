@@ -47,12 +47,13 @@ function edd_cr_filter_restricted_content( $content, $download_id, $price_id = n
 
 	if ( is_array( $download_id ) ) {
 
+		$message = $multi_message;
+
 		foreach ( $download_id as $id ) {
 
 			if ( edd_has_user_purchased( $user_ID, $id, $price_id ) ) {
 
 				$is_restricted = false;
-				$message = $multi_message;
 			}
 
 		}
