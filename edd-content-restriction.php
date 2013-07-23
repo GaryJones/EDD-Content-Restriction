@@ -58,6 +58,6 @@ if ( class_exists( 'bbPress' ) ) {
 
 
 if( ! class_exists( 'EDD_License' ) ) {
-	include( EDD_CR_PLUGIN_DIR . 'includes/EDD_License_Handler.php' );
+	include( EDD_CR_PLUGIN_DIR . '/includes/EDD_License_Handler.php' );
 }
 $eddc_license = new EDD_License( __FILE__, EDD_CR_PRODUCT_NAME, EDD_CR_VERSION, 'Pippin Williamson' );
