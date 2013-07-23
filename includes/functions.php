@@ -23,7 +23,7 @@ function edd_cr_filter_restricted_content( $content, $download_id, $price_id = n
 
 	global $user_ID;
 
-	$is_restricted  = false;
+	$is_restricted  = true;
 	$multi_message  = '<div class="edd_cr_message">' . __( 'This content is restricted to buyers.', 'edd_cr' ) . '</div>';
 
 	if( ! empty( $price_id ) ) {
@@ -49,17 +49,17 @@ function edd_cr_filter_restricted_content( $content, $download_id, $price_id = n
 
 		foreach ( $download_id as $id ) {
 
-			if ( ! edd_has_user_purchased( $user_ID, $id, $price_id ) ) {
+			if ( edd_has_user_purchased( $user_ID, $id, $price_id ) ) {
 
-				$is_restricted = true; // user has not purchased one of the downloads
-				$message       = $multi_message;
+				$is_restricted = false;
+				$message = $multi_message;
 			}
 
 		}
 
-	} elseif ( $download_id && ! edd_has_user_purchased( $user_ID, $download_id, $price_id ) ) {
+	} elseif ( $download_id && edd_has_user_purchased( $user_ID, $download_id, $price_id ) ) {
 
-		$is_restricted = true;
+		$is_restricted = false;
 		$message       = $single_message;
 
 	}
