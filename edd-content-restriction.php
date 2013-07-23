@@ -45,11 +45,6 @@ add_action('init', 'edd_cr_textdomain');
 |--------------------------------------------------------------------------
 */
 
-if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
-	// load our custom updater
-	include( dirname( __FILE__ ) . '/EDD_SL_Plugin_Updater.php' );
-}
-
 include( EDD_CR_PLUGIN_DIR . '/includes/settings.php');
 include( EDD_CR_PLUGIN_DIR . '/includes/functions.php');
 include( EDD_CR_PLUGIN_DIR . '/includes/metabox.php');
@@ -61,20 +56,8 @@ if ( class_exists( 'bbPress' ) ) {
 	include( EDD_CR_PLUGIN_DIR . '/includes/bbpress.php');
 }
 
-function edd_cr_updater() {
 
-	global $edd_options;
-
-	// retrieve our license key from the DB
-	$edd_cr_license_key = isset( $edd_options['edd_cr_license_key'] ) ? trim( $edd_options['edd_cr_license_key'] ) : '';
-
-	// setup the updater
-	$edd_cr_updater = new EDD_SL_Plugin_Updater( EDD_CR_STORE_API_URL, __FILE__, array(
-			'version' 	=> EDD_CR_VERSION, 		// current version number
-			'license' 	=> $edd_cr_license_key, // license key (used get_option above to retrieve from DB)
-			'item_name' => EDD_CR_PRODUCT_NAME, // name of this plugin
-			'author' 	=> 'Pippin Williamson'  // author of this plugin
-		)
-	);
+if( ! class_exists( 'EDD_License' ) ) {
+	include( EDD_CR_PLUGIN_DIR . 'includes/EDD_License_Handler.php' );
 }
-add_action( 'admin_init', 'edd_cr_updater' );
+$eddc_license = new EDD_License( __FILE__, EDD_CR_PRODUCT_NAME, EDD_CR_VERSION, 'Pippin Williamson' );
