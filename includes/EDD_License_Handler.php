@@ -44,7 +44,7 @@ if ( !class_exists( 'EDD_License' ) ) {
 
 			// For backwards compatibility with old license key option
 			if( isset( $edd_options['edd_cr_license_key'] )  && empty( $this->license ) ) {
-				$this->license = trim( $edd_options['edd_cr_license_key'] )
+				$this->license = trim( $edd_options['edd_cr_license_key'] );
 			}
 
 			// Setup hooks
