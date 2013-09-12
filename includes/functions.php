@@ -68,9 +68,9 @@ function edd_cr_filter_restricted_content( $content, $download_id, $price_id = n
 	$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $post_id, $download_id, $user_ID, $price_id );
 
 	if( $is_restricted )
-		return $message;
+		return do_shortcode( $message );
 	else
-		return $content;
+		return do_shortcode( $content );
 
 }
 
