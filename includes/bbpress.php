@@ -5,7 +5,7 @@ function edd_cr_filter_bbp_topics_list( $query ) {
 
 	global $user_ID;
 
-	if ( current_user_can( 'manage_options' ) )
+	if ( current_user_can( 'moderate' ) )
 		return $query;
 
 	if ( bbp_is_single_forum() ) {
@@ -36,7 +36,7 @@ add_filter( 'bbp_has_topics_query', 'edd_cr_filter_bbp_topics_list' );
 function edd_cr_filter_replies( $content, $reply_id ) {
 	global $user_ID, $post;
 
-	if ( current_user_can( 'manage_options' ) )
+	if ( current_user_can( 'moderate' ) )
 		return $content;
 
 	$has_access = true;
@@ -83,7 +83,7 @@ add_filter( 'bbp_get_reply_content', 'edd_cr_filter_replies', 2, 999 );
 function edd_cr_hide_new_topic_form( $can_access ) {
 	global $user_ID;
 
-	if ( current_user_can( 'manage_options' ) )
+	if ( current_user_can( 'moderate' ) )
 		return $can_access;
 
 	$is_restricted = false;
@@ -110,7 +110,7 @@ add_filter( 'bbp_current_user_can_access_create_topic_form', 'edd_cr_hide_new_to
 function edd_cr_hide_new_replies_form( $can_access ) {
 	global $user_ID;
 
-	if ( current_user_can( 'manage_options' ) )
+	if ( current_user_can( 'moderate' ) )
 		return $can_access;
 
 	$is_restricted = false;

@@ -12,7 +12,7 @@ function edd_cr_filter_content( $content ) {
 	$restricted_variable = get_post_meta( $post->ID, '_edd_cr_restricted_to_variable', true ); // for variable prices
 	$restricted_variable = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
 
-	if( $restricted_to )
+	if( $restricted_to && ! current_user_can( 'edit_post', $post->ID ) )
 		return edd_cr_filter_restricted_content( $content, $restricted_to, $restricted_variable, null, $post->ID );
 	return $content;
 }
@@ -79,7 +79,9 @@ function edd_cr_filter_restricted_content( $content, $download_id, $price_id = n
 
 
 function edd_cr_is_restricted( $post_id ) {
-	return get_post_meta( $post_id, '_edd_cr_restricted_to', true );
+	$restricted = get_post_meta( $post_id, '_edd_cr_restricted_to', true );
+
+	return $restricted;
 }
 
 
