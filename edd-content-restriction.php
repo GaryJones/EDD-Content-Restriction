@@ -3,7 +3,7 @@
 Plugin Name: Easy Digital Downloads - Content Restriction
 Plugin URL: http://easydigitaldownloads.com/extension/content-restriction
 Description: Allows you to restrict content from posts, pages, and custom post types to only those users who have purchased certain products. Also includes bbPress support.
-Version: 1.3.5
+Version: 1.3.6
 Author: Pippin Williamson
 Author URI: http://pippinsplugins.com
 Contributors: mordauk, ghost1227
@@ -49,9 +49,7 @@ if( !class_exists( 'EDD_Content_Restriction' ) ) {
 			if( !defined( 'EDD_CR_PLUGIN_URL' ) )
 				define( 'EDD_CR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-			define( 'EDD_CR_STORE_API_URL', 'https://easydigitaldownloads.com' );
-			define( 'EDD_CR_PRODUCT_NAME', 'Content Restriction' );
-			define( 'EDD_CR_VERSION', '1.3' );
+			define( 'EDD_CR_VERSION', '1.3.6' );
 
 			// Load our custom updater
 			if( ! class_exists( 'EDD_License' ) ) {
@@ -81,7 +79,7 @@ if( !class_exists( 'EDD_Content_Restriction' ) ) {
 			// Get license key from DB
 			$edd_cr_license_key = isset( $edd_options['edd_cr_license_key'] ) ? trim( $edd_options['edd_cr_license_key'] ) : '';
 
-			$eddc_license = new EDD_License( __FILE__, EDD_CR_PRODUCT_NAME, EDD_CR_VERSION, 'Pippin Williamson', $edd_cr_license_key );
+			$eddc_license = new EDD_License( __FILE__, 'Content Restriction', EDD_CR_VERSION, 'Pippin Williamson', $edd_cr_license_key );
 
 		}
 
@@ -112,7 +110,6 @@ if( !class_exists( 'EDD_Content_Restriction' ) ) {
 		 * @return		void
 		 */
 		public function includes() {
-			include( EDD_CR_PLUGIN_DIR . '/includes/settings.php');
 			include( EDD_CR_PLUGIN_DIR . '/includes/functions.php');
 			include( EDD_CR_PLUGIN_DIR . '/includes/metabox.php');
 			include( EDD_CR_PLUGIN_DIR . '/includes/scripts.php');
