@@ -1,6 +1,24 @@
 <?php
+/**
+ * bbPress Functions
+ *
+ * @package		EDD Content Restriction
+ * @subpackage	bbPress
+ * @copyright	Copyright (c) 2013, Pippin Williamson
+ * @since		1.0
+ */
 
-// hides all topics in a restricted forum for non active users
+// Exit if accessed directly
+if( !defined( 'ABSPATH' ) ) exit;
+
+/**
+ * Hides all topics in a restricted forum for non active users
+ *
+ * @since		1.0
+ * @global		$user_ID
+ * @param		array $query the initial topic list query
+ * @return		array $query the filtered topic list query
+ */
 function edd_cr_filter_bbp_topics_list( $query ) {
 
 	global $user_ID;
@@ -32,7 +50,16 @@ function edd_cr_filter_bbp_topics_list( $query ) {
 add_filter( 'bbp_has_topics_query', 'edd_cr_filter_bbp_topics_list' );
 
 
-// hides the content of replies
+/**
+ * Hides the content of replies
+ *
+ * @since		1.0
+ * @global		$user_ID
+ * @global		$post
+ * @param		$content
+ * @param		int $reply_id
+ * @return		mixed
+ */
 function edd_cr_filter_replies( $content, $reply_id ) {
 	global $user_ID, $post;
 
@@ -79,7 +106,14 @@ function edd_cr_filter_replies( $content, $reply_id ) {
 add_filter( 'bbp_get_reply_content', 'edd_cr_filter_replies', 2, 999 );
 
 
-// hides the new reply form
+/**
+ * Hides the new reply form
+ *
+ * @since		1.0
+ * @global		$user_ID
+ * @param		$can_access
+ * @return		bool
+ */
 function edd_cr_hide_new_topic_form( $can_access ) {
 	global $user_ID;
 
@@ -106,7 +140,13 @@ function edd_cr_hide_new_topic_form( $can_access ) {
 add_filter( 'bbp_current_user_can_access_create_topic_form', 'edd_cr_hide_new_topic_form' );
 
 
-// hides the new reply form
+/**
+ * Hides the new reply form
+ *
+ * @global		$user_ID
+ * @param		$can_access
+ * @return		bool
+ */
 function edd_cr_hide_new_replies_form( $can_access ) {
 	global $user_ID;
 
@@ -141,6 +181,15 @@ add_filter( 'bbp_current_user_can_access_create_reply_form', 'edd_cr_hide_new_re
 add_filter( 'bbp_current_user_can_access_create_topic_form', 'edd_cr_hide_new_replies_form' ); // this is required for it to work with the default theme
 
 
+/**
+ * Override topic feedback message
+ *
+ * @since		1.0
+ * @param		string $translated_text the original feedback text
+ * @param		string $text
+ * @param		string $domain the textdomain to use
+ * @return		string $translated_text the filtered feedback text
+ */
 function edd_cr_topic_feedback_messages( $translated_text, $text, $domain ) {
 
 	switch ( $translated_text ) {
@@ -151,6 +200,16 @@ function edd_cr_topic_feedback_messages( $translated_text, $text, $domain ) {
 	return $translated_text;
 }
 
+
+/**
+ * Override forum feedback message
+ *
+ * @since		1.0
+ * @param		string $translated_text the original feedback text
+ * @param		string $text
+ * @param		string $domain the textdomain to use
+ * @return		string $translated_text the filtered feedback text
+ */
 function edd_cr_forum_feedback_messages( $translated_text, $text, $domain ) {
 
 	switch ( $translated_text ) {
@@ -165,6 +224,13 @@ function edd_cr_forum_feedback_messages( $translated_text, $text, $domain ) {
 }
 
 
+/**
+ * Apply the filtered feedback messages to the forums
+ *
+ * @since		1.0
+ * @global		$user_ID
+ * @return		void
+ */
 function edd_cr_apply_feedback_messages() {
 	global $user_ID;
 

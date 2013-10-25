@@ -1,5 +1,23 @@
 <?php
+/**
+ * Metabox
+ *
+ * @package		EDD Content Restriction
+ * @subpackage	Metabox
+ * @copyright	Copyright (c) 2013, Pippin Williamson
+ * @since		1.0
+ */
 
+// Exit if accessed directly
+if( !defined( 'ABSPATH' ) ) exit;
+
+
+/**
+ * Add metabox
+ *
+ * @global		$post
+ * @return		void
+ */
 function edd_cr_submitbox() {
 
 	global $post;
@@ -50,6 +68,14 @@ function edd_cr_submitbox() {
 }
 add_action( 'post_submitbox_start', 'edd_cr_submitbox', 0 );
 
+
+/**
+ * Save metabox data
+ *
+ * @since		1.0
+ * @param		$post_id the ID of this post
+ * @return		void
+ */
 function edd_cr_save_meta_data( $post_id ) {
 	if ( isset( $_POST['edd-cr-nonce'] ) && wp_verify_nonce( $_POST['edd-cr-nonce'], 'edd-cr-nonce' ) ) {
 		$restricted_to = sanitize_text_field( $_POST['edd_cr_download_id'] );
