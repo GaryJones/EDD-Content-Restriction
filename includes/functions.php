@@ -60,25 +60,27 @@ function edd_cr_filter_restricted_content( $content, $download_id, $price_id = n
 	if( ! empty( $price_id ) ) {
 		$single_message = '<div class="edd_cr_message">';
 		$single_message .= sprintf(
-								__( 'This content is restricted to buyers of the %s for %s.', 'edd_cr' ),
-								edd_get_price_option_name( $download_id, $price_id ),
-								'<a href="' . get_permalink( $download_id ) . '">' . get_the_title( $download_id ) . '</a>'
-							);
+			__( 'This content is restricted to buyers of the %s for %s.', 'edd_cr' ),
+			edd_get_price_option_name( $download_id, $price_id ),
+			'<a href="' . get_permalink( $download_id ) . '">' . get_the_title( $download_id ) . '</a>'
+		);
 		$single_message .= '</div>';
-	} else {
+	} elseif( ! is_array( $download_id ) ) {
 		$single_message = '<div class="edd_cr_message">';
 		$single_message .= sprintf(
-							__( 'This content is restricted to buyers of %s.', 'edd_cr' ),
-							'<a href="' . get_permalink( $download_id ) . '">' . get_the_title( $download_id ) . '</a>'
-						);
+			__( 'This content is restricted to buyers of %s.', 'edd_cr' ),
+			'<a href="' . get_permalink( $download_id ) . '">' . get_the_title( $download_id ) . '</a>'
+		);
 		$single_message .= '</div>';
 	}
 
-	$message = $single_message;
+	if( ! empty( $single_message ) )
+		$message = $single_message;
 
 	if ( is_array( $download_id ) ) {
 
-		$message = $multi_message;
+		if( empty( $message ) )
+			$message = $multi_message;
 
 		foreach ( $download_id as $id ) {
 
@@ -92,7 +94,9 @@ function edd_cr_filter_restricted_content( $content, $download_id, $price_id = n
 	} elseif ( $download_id && edd_has_user_purchased( $user_ID, $download_id, $price_id ) ) {
 
 		$is_restricted = false;
-		$message       = $single_message;
+
+		if( empty( $message ) )
+			$message = $single_message;
 
 	}
 
