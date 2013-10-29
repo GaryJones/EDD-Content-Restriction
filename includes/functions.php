@@ -203,7 +203,7 @@ function edd_cr_add_template_tags( $message, $payment_data, $payment_id ) {
 	$meta = edd_cr_get_restricted_pages( $payment_id );
 
 	// No pages? Quit!
-	if( empty( $meta ) ) return;
+	if( empty( $meta ) ) return $message;
 
 	$file_list = '<li class="edd_cr_accessible_pages">' . __( 'Pages', 'edd_cr' ) . '<br/>';
 	$file_list .= '<ul>';
