@@ -50,15 +50,15 @@ add_filter( 'the_content', 'edd_cr_filter_content' );
  * @param		int $post_id
  * @return		string
  */
-function edd_cr_filter_restricted_content( $content, $download_id, $price_id = null, $message = null, $post_id = 0 ) {
+function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $price_id = null, $message = null, $post_id = 0, $class = '' ) {
 
 	global $user_ID;
 
 	$is_restricted  = true;
-	$multi_message  = '<div class="edd_cr_message">' . __( 'This content is restricted to buyers.', 'edd_cr' ) . '</div>';
+	$multi_message  = '<div class="edd_cr_message ' . $class . '">' . __( 'This content is restricted to buyers.', 'edd_cr' ) . '</div>';
 
 	if( ! empty( $price_id ) ) {
-		$single_message = '<div class="edd_cr_message">';
+		$single_message = '<div class="edd_cr_message ' . $class . '">';
 		$single_message .= sprintf(
 			__( 'This content is restricted to buyers of the %s for %s.', 'edd_cr' ),
 			edd_get_price_option_name( $download_id, $price_id ),
@@ -66,7 +66,7 @@ function edd_cr_filter_restricted_content( $content, $download_id, $price_id = n
 		);
 		$single_message .= '</div>';
 	} elseif( ! is_array( $download_id ) ) {
-		$single_message = '<div class="edd_cr_message">';
+		$single_message = '<div class="edd_cr_message ' . $class . '">';
 		$single_message .= sprintf(
 			__( 'This content is restricted to buyers of %s.', 'edd_cr' ),
 			'<a href="' . get_permalink( $download_id ) . '">' . get_the_title( $download_id ) . '</a>'

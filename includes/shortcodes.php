@@ -21,18 +21,19 @@ if( !defined( 'ABSPATH' ) ) exit;
  */
 function edd_cr_shortcode($atts, $content = null ) {
 	extract( shortcode_atts( array(
-			'id' => null,
+			'id'       => null,
 			'price_id' => null,
-			'message' => null
+			'message'  => null,
+			'class'    => ''
 		), $atts )
 	);
 
-	if( is_null($id) )
+	if( is_null( $id ) )
 		return $content;
 
 	$ids = explode(',', $id);
 
-	return edd_cr_filter_restricted_content( $content, $ids, $price_id, $message );
+	return edd_cr_filter_restricted_content( $content, $ids, $price_id, $message, 0, $class );
 
 }
 add_shortcode('edd_restrict', 'edd_cr_shortcode');
