@@ -234,7 +234,7 @@ function edd_cr_add_template_tags_description( $tags ) {
 
 	return $tags;
 }
-add_filter( 'edd_template_tags_description', 'edd_cr_add_template_tags_description', 200, 1 );
+add_filter( 'edd_purchase_receipt_template_tags_description', 'edd_cr_add_template_tags_description', 200, 1 );
 
 
 /**
