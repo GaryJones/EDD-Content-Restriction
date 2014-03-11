@@ -70,13 +70,15 @@ function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $pri
 		);
 	}
 
-	if( ! empty( $single_message ) )
+	if( ! empty( $single_message ) && is_null( $message ) && count( $download_id ) <= 1 ) {
 		$message = $single_message;
+	}
 
-	if ( is_array( $download_id ) ) {
+	if ( is_array( $download_id ) && count( $download_id ) > 1 ) {
 
-		if( empty( $message ) )
+		if( is_null( $message ) ) {
 			$message = $multi_message;
+		}
 
 		foreach ( $download_id as $id ) {
 
@@ -91,8 +93,9 @@ function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $pri
 
 		$is_restricted = false;
 
-		if( empty( $message ) )
+		if( is_null( $message ) ) {
 			$message = $single_message;
+		}
 
 	}
 
