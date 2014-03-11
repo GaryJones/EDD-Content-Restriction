@@ -76,8 +76,9 @@ if( !class_exists( 'EDD_Content_Restriction' ) ) {
 			// Internationalization
 			add_action( 'init', array( $this, 'textdomain' ) );
 
-			$eddc_license = new EDD_License( __FILE__, 'Content Restriction', EDD_CR_VERSION, 'Pippin Williamson', 'edd_cr_license_key' );
-
+			if( class_exists( 'EDD_License' ) ) {
+				$eddc_license = new EDD_License( __FILE__, 'Content Restriction', EDD_CR_VERSION, 'Pippin Williamson', 'edd_cr_license_key' );
+			}
 		}
 
 
