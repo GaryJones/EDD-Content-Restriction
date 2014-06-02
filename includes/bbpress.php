@@ -19,12 +19,13 @@ if( !defined( 'ABSPATH' ) ) exit;
  * @param		array $query the initial topic list query
  * @return		array $query the filtered topic list query
  */
-function edd_cr_filter_bbp_topics_list( $query ) {
+function edd_cr_filter_bbp_topics_list( $has_topics, $query ) {
 
 	global $user_ID;
 
-	if ( current_user_can( 'moderate' ) )
+	if ( current_user_can( 'moderate' ) ) {
 		return $query;
+	}
 
 	if ( bbp_is_single_forum() ) {
 
@@ -45,13 +46,13 @@ function edd_cr_filter_bbp_topics_list( $query ) {
 		$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, bbp_is_single_forum(), $restricted_to, $user_ID, $restricted_variable );
 
 		if ( $is_restricted ) {
-			return array(); // return an empty query
+			return false;
 		}
 	}
 
-	return $query;
+	return $has_topics;
 }
-add_filter( 'bbp_has_topics_query', 'edd_cr_filter_bbp_topics_list' );
+add_filter( 'bbp_has_topics', 'edd_cr_filter_bbp_topics_list', 10, 2 );
 
 
 /**
