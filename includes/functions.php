@@ -74,13 +74,15 @@ function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $pri
 		$single_message .= '</div>';
 	}
 
-	if( ! empty( $single_message ) )
+	if( ! empty( $single_message ) ) {
 		$message = $single_message;
+	}
 
 	if ( is_array( $download_id ) ) {
 
-		if( empty( $message ) )
+		if( empty( $message ) ) {
 			$message = $multi_message;
+		}
 
 		foreach ( $download_id as $id ) {
 
@@ -95,21 +97,23 @@ function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $pri
 
 		$is_restricted = false;
 
-		if( empty( $message ) )
+		if( empty( $message ) ) {
 			$message = $single_message;
+		}
 
 	}
 
-	if( ! is_user_logged_in() )
+	if( ! is_user_logged_in() ) {
 		$is_restricted = true;
+	}
 
 	$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $post_id, $download_id, $user_ID, $price_id );
 
-	if( $is_restricted )
+	if( $is_restricted ) {
 		return do_shortcode( $message );
-	else
+	} else {
 		return do_shortcode( $content );
-
+	}
 }
 
 
@@ -260,6 +264,7 @@ function edd_cr_get_restricted_pages( $payment_id ) {
 		'meta_value'	=> $ids,
 		'meta_compare'	=> 'IN'
 	);
+
 
 	$meta_std = new WP_Query( $args );
 	$meta_std = $meta_std->posts;
