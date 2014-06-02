@@ -36,7 +36,7 @@ function edd_cr_filter_bbp_topics_list( $query ) {
 
 		$restricted_variable = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
 
-		$is_restricted = ( $restricted_to && !edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) );
+		$is_restricted = ( $restricted_to && ( ! edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) || ! is_user_logged_in() ) );
 
 		$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, bbp_is_single_forum(), $restricted_to, $user_ID, $restricted_variable );
 

@@ -55,32 +55,28 @@ function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $pri
 	global $user_ID;
 
 	$is_restricted  = true;
-	$multi_message  = '<div class="edd_cr_message ' . $class . '">' . __( 'This content is restricted to buyers.', 'edd_cr' ) . '</div>';
+	$multi_message  = __( 'This content is restricted to buyers.', 'edd_cr' );
 
 	if( ! empty( $price_id ) ) {
-		$single_message = '<div class="edd_cr_message ' . $class . '">';
-		$single_message .= sprintf(
+		$single_message = sprintf(
 			__( 'This content is restricted to buyers of the %s for %s.', 'edd_cr' ),
 			edd_get_price_option_name( $download_id, $price_id ),
 			'<a href="' . get_permalink( $download_id ) . '">' . get_the_title( $download_id ) . '</a>'
 		);
-		$single_message .= '</div>';
 	} elseif( ! is_array( $download_id ) ) {
-		$single_message = '<div class="edd_cr_message ' . $class . '">';
-		$single_message .= sprintf(
+		$single_message = sprintf(
 			__( 'This content is restricted to buyers of %s.', 'edd_cr' ),
 			'<a href="' . get_permalink( $download_id ) . '">' . get_the_title( $download_id ) . '</a>'
 		);
-		$single_message .= '</div>';
 	}
 
-	if( ! empty( $single_message ) ) {
+	if( ! empty( $single_message ) && is_null( $message ) && count( $download_id ) <= 1 ) {
 		$message = $single_message;
 	}
 
-	if ( is_array( $download_id ) ) {
+	if ( is_array( $download_id ) && count( $download_id ) > 1 ) {
 
-		if( empty( $message ) ) {
+		if( is_null( $message ) ) {
 			$message = $multi_message;
 		}
 
@@ -97,7 +93,7 @@ function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $pri
 
 		$is_restricted = false;
 
-		if( empty( $message ) ) {
+		if( is_null( $message ) ) {
 			$message = $single_message;
 		}
 
@@ -109,7 +105,10 @@ function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $pri
 
 	$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $post_id, $download_id, $user_ID, $price_id );
 
-	if( $is_restricted ) {
+
+	$message = '<div class="edd_cr_message ' . $class . '">' . $message . '</div>';
+
+	if( $is_restricted )
 		return do_shortcode( $message );
 	} else {
 		return do_shortcode( $content );
