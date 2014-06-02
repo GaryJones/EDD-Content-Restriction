@@ -108,7 +108,7 @@ function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $pri
 
 	$message = '<div class="edd_cr_message ' . $class . '">' . $message . '</div>';
 
-	if( $is_restricted )
+	if( $is_restricted ) {
 		return do_shortcode( $message );
 	} else {
 		return do_shortcode( $content );

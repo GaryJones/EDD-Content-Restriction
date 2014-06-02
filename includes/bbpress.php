@@ -38,6 +38,10 @@ function edd_cr_filter_bbp_topics_list( $query ) {
 
 		$is_restricted = ( $restricted_to && ( ! edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) || ! is_user_logged_in() ) );
 
+		if( (int) get_post_field( 'post_author', $restricted_to ) === get_current_user_id() ) {
+			$is_restricted = false;
+		}
+
 		$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, bbp_is_single_forum(), $restricted_to, $user_ID, $restricted_variable );
 
 		if ( $is_restricted ) {
@@ -80,7 +84,12 @@ function edd_cr_filter_replies( $content, $reply_id ) {
 
 	$restricted_variable = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
 
-	$is_restricted = ( $restricted_to && !edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) );
+	$is_restricted = $restricted_to && ! edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable );
+
+	if( (int) get_post_field( 'post_author', $restricted_to ) === get_current_user_id() ) {
+		$is_restricted = false;
+	}
+
 	$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted_id, $restricted_to, $user_ID, $restricted_variable );
 
 	if( $is_restricted ) {
@@ -133,6 +142,10 @@ function edd_cr_hide_new_topic_form( $can_access ) {
 		$is_restricted = true;
 	}
 
+	if( (int) get_post_field( 'post_author', $restricted_to ) === get_current_user_id() ) {
+		$is_restricted = false;
+	}
+
 	$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted_id, $restricted_to, $user_ID, $restricted_variable );
 
 	return $is_restricted ? false : true;
@@ -172,6 +185,10 @@ function edd_cr_hide_new_replies_form( $can_access ) {
 		$is_restricted = true;
 	}
 
+	if( (int) get_post_field( 'post_author', $restricted_to ) === get_current_user_id() ) {
+		$is_restricted = false;
+	}
+
 	$is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted_id, $restricted_to, $user_ID, $restricted_variable );
 
 	return $is_restricted ? false : true;
@@ -193,9 +210,9 @@ add_filter( 'bbp_current_user_can_access_create_topic_form', 'edd_cr_hide_new_re
 function edd_cr_topic_feedback_messages( $translated_text, $text, $domain ) {
 
 	switch ( $translated_text ) {
-	case 'You cannot reply to this topic.':
-		$translated_text = __( 'Topic creation is restricted to buyers.', 'edd_cr' );
-		break;
+		case 'You cannot reply to this topic.':
+			$translated_text = __( 'Topic creation is restricted to buyers.', 'edd_cr' );
+			break;
 	}
 	return $translated_text;
 }
@@ -237,7 +254,7 @@ function edd_cr_apply_feedback_messages() {
 	if ( bbp_is_single_topic() ) {
 		add_filter( 'gettext', 'edd_cr_topic_feedback_messages', 20, 3 );
 	} else if ( bbp_is_single_forum() && edd_cr_is_restricted( bbp_get_forum_id() ) ) {
-			add_filter( 'gettext', 'edd_cr_forum_feedback_messages', 20, 3 );
-		}
+		add_filter( 'gettext', 'edd_cr_forum_feedback_messages', 20, 3 );
+	}
 }
 add_action( 'template_redirect', 'edd_cr_apply_feedback_messages' );
