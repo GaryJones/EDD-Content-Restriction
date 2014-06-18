@@ -104,9 +104,13 @@ if( !class_exists( 'EDD_Content_Restriction' ) ) {
 		 */
 		public function includes() {
 			include( EDD_CR_PLUGIN_DIR . '/includes/functions.php');
-			include( EDD_CR_PLUGIN_DIR . '/includes/metabox.php');
 			include( EDD_CR_PLUGIN_DIR . '/includes/scripts.php');
 			include( EDD_CR_PLUGIN_DIR . '/includes/shortcodes.php');
+
+			if( is_admin() ) {
+				include( EDD_CR_PLUGIN_DIR . '/includes/metabox.php');
+				$metabox = new EDD_CR_Metabox;
+			}
 
 			if ( class_exists( 'bbPress' ) ) {
 				// bbPress forum / topic restriction
