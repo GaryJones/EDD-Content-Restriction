@@ -61,46 +61,70 @@ class EDD_CR_Metabox {
 ?>
 		<div id="edd_cr_downloads">
 			<div id="edd_cr_download_fields" class="edd_meta_table_wrap">
-				<table class="widefat" width="100%" cellpadding="0" cellspacing="0">
+				<table class="widefat edd_repeatable_table" width="100%" cellpadding="0" cellspacing="0">
 					<thead>
 						<tr>
-							<th><?php printf( __( 'Restrict this content to buyers of one or more %s.', 'edd_cr' ), edd_get_label_plural() ); ?></th>
+							<th colspan="3"><?php printf( __( 'Restrict this content to buyers of one or more %s.', 'edd_cr' ), edd_get_label_plural() ); ?></th>
 							<?php do_action( 'edd_cr_downloads_table_head', $post_id ); ?>
+							<th style="width:2%"></th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr class="edd_repeatable_product_wrapper">
-							<td colspan="2">
-								<?php
-								echo EDD()->html->product_dropdown( array(
-									'name'     => '_edd_bundled_products[]',
-									'id'       => 'edd_bundled_products',
-									'selected' => $products,
-									'multiple' => true,
-									'chosen'   => true
-								) );
-								?>
-							</td>
-							<?php do_action( 'edd_cr_downloads_table_row', $post_id ); ?>
-						</tr>
+						<?php if( $downloads ) : ?>
+							<?php foreach( $downloads as $key => $download ) : ?>
+								<tr class="edd_repeatable_product_wrapper">
+									<td colspan="2">
+										<?php
+										echo EDD()->html->product_dropdown( array(
+											'name'     => '_edd_cr_downloads[' . $key . '][id]',
+											'id'       => '_edd_cr_downloads_' . $key . '_id',
+											'selected' => $products,
+											'number'   => -1
+										) );
+										?>
+									</td>
+									<td>
+										<a href="#" class="edd_remove_repeatable" data-type="file" style="background: url(<?php echo admin_url('/images/xit.gif'); ?>) no-repeat;">&times;</a>
+									</td>
+									<?php do_action( 'edd_cr_downloads_table_row', $post_id ); ?>
+								</tr>
+							<?php endforeach; ?>
+						<?php else : ?>
+							<tr class="edd_repeatable_product_wrapper">
+								<td colspan="2">
+									<?php
+									echo EDD()->html->product_dropdown( array(
+										'name'     => '_edd_cr_downloads[0][id]',
+										'id'       => '_edd_cr_downloads_0_id',
+										'number'   => -1
+									) );
+									?>
+								</td>
+								<td>
+									<a href="#" class="edd_remove_repeatable" data-type="file" style="background: url(<?php echo admin_url('/images/xit.gif'); ?>) no-repeat;">&times;</a>
+								</td>
+								<?php do_action( 'edd_cr_downloads_table_row', $post_id ); ?>
+							</tr>
+						<?php endif; ?>
 						<tr>
-							<td>
-								<?php
-								echo EDD()->html->select( array(
-									'name'     => '_edd_cr_condition',
-									'id'       => '_edd_cr_condition',
-									'selected' => $condition,
-									'options'  => array( 
-										'any'  => sprintf( __( 'Customer has purchased one more %s', 'edd_cr' ), edd_get_label_plural() ),
-										'all'  => sprintf( __( 'Customer has purchased all %s', 'edd_cr' ), edd_get_label_plural() ),
-									)
-								) );
-								?>
-								<?php _e( 'Condition', 'edd_cr' ); ?>
+							<td class="submit" colspan="2" style="float: none; clear:both; background: #fff;">
+								<a class="button-secondary edd_add_repeatable" style="margin: 6px 0 10px;"><?php _e( 'Add Condition', 'edd_cr' ); ?></a>
 							</td>
 						</tr>
 					</tbody>
 				</table>
+				<?php
+				echo EDD()->html->select( array(
+					'name'     => '_edd_cr_condition',
+					'id'       => '_edd_cr_condition',
+					'selected' => $condition,
+					'options'  => array( 
+						'any'  => sprintf( __( 'Customer has purchased one more %s', 'edd_cr' ), edd_get_label_plural() ),
+						'all'  => sprintf( __( 'Customer has purchased all %s', 'edd_cr' ), edd_get_label_plural() ),
+					)
+				) );
+				?>
+				<?php _e( 'Condition', 'edd_cr' ); ?>
 			</div>
 		</div>
 <?php
