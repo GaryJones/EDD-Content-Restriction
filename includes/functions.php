@@ -261,7 +261,8 @@ function edd_cr_get_restricted_pages( $payment_id ) {
 		'post_type'		=> 'any',
 		'meta_key'		=> '_edd_cr_restricted_to',
 		'meta_value'	=> $ids,
-		'meta_compare'	=> 'IN'
+		'meta_compare'	=> 'IN',
+		'ignore_sticky_posts' => true
 	);
 
 
@@ -272,7 +273,8 @@ function edd_cr_get_restricted_pages( $payment_id ) {
 		'post_type'		=> 'any',
 		'meta_key'		=> '_edd_cr_restricted_to_variable',
 		'meta_value'	=> $ids,
-		'meta_compare'	=> 'IN'
+		'meta_compare'	=> 'IN',
+		'ignore_sticky_posts' => true
 	);
 
 	$meta_var = new WP_Query( $args );
