@@ -29,7 +29,7 @@ function edd_cr_submitbox() {
 
 	$excluded_types = array( 'download', 'edd_payment', 'reply', 'acf', 'deprecated_log' );
 
-	if ( !in_array( get_post_type( $post->ID ), apply_filters( 'edd_cr_excluded_post_types', $excluded_types ) ) ) {
+	if ( ! in_array( get_post_type( $post->ID ), apply_filters( 'edd_cr_excluded_post_types', $excluded_types ) ) ) {
 
 		$downloads = get_posts( array( 'post_type' => 'download', 'posts_per_page' => -1 ) );
 
@@ -37,7 +37,6 @@ function edd_cr_submitbox() {
 		$restricted_variable = get_post_meta( $post->ID, '_edd_cr_restricted_to_variable', true ); // for variable prices
 
 		if ( $downloads ) {
-
 			echo '<div id="edd-cr-options" style="margin: 0 0 8px;">';
 				echo '<label for="edd_cr_download_id">' . sprintf( __( 'Restrict this content to buyers of a %s.', 'edd_cr' ), edd_get_label_singular() ) . '</label>';
 				echo '<select name="edd_cr_download_id" id="edd_cr_download_id">';
