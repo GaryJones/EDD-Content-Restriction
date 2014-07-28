@@ -191,6 +191,15 @@ function edd_cr_add_to_receipt( $payment, $edd_receipt_args ) {
 }
 add_action( 'edd_payment_receipt_after', 'edd_cr_add_to_receipt', 1, 2 );
 
+/**
+ * Registers our email tags
+ *
+ * @since		1.5.3
+ */
+function edd_cr_register_email_tags() {
+	edd_add_email_tag( 'page_list', __( 'Shows a list of restricted pages the customer has access to', 'edd_cr' ), 'edd_cr_add_template_tags' );
+}
+add_action( 'edd_add_email_tags', 'edd_cr_register_email_tags' );
 
 /**
  * Add email template tag
@@ -201,44 +210,28 @@ add_action( 'edd_payment_receipt_after', 'edd_cr_add_to_receipt', 1, 2 );
  * @param		int $payment_id the payment ID
  * @return		string $message the updated email message
  */
-function edd_cr_add_template_tags( $message, $payment_data, $payment_id ) {
+function edd_cr_add_template_tags( $payment_id ) {
+
 	// Get the array of restricted pages for this payment
 	$meta = edd_cr_get_restricted_pages( $payment_id );
 
 	// No pages? Quit!
-	if( empty( $meta ) ) return $message;
-
-	$file_list = '<li class="edd_cr_accessible_pages">' . __( 'Pages', 'edd_cr' ) . '<br/>';
-	$file_list .= '<ul>';
-
-	foreach( $meta as $post ) {
-		$file_list .= '<li><a href="' . get_permalink( $post->ID ) . '">' . $post->post_title . '</a></li>';
+	if( empty( $meta ) ) {
+		return '';
 	}
 
-	$file_list .= '</ul>';
-	$file_list .= '</li>';
+	$page_list = '<div class="edd_cr_accessible_pages">' . __( 'Pages', 'edd_cr' ) . '</div>';
+	$page_list .= '<ul>';
 
-	$message = str_replace( '{page_list}', $file_list, $message );
+	foreach( $meta as $post ) {
+		$page_list .= '<li><a href="' . get_permalink( $post->ID ) . '">' . $post->post_title . '</a></li>';
+	}
 
-	return $message;
+	$page_list .= '</ul>';
+	$page_list .= '</li>';
+
+	return $page_list;
 }
-add_filter( 'edd_email_template_tags', 'edd_cr_add_template_tags', 200, 3 );
-
-
-/**
- * Add email template tag to settings display
- *
- * @since		1.3
- * @param		string $tags the current tag list
- * @return		string $tags the modified tag list
- */
-function edd_cr_add_template_tags_description( $tags ) {
-	$tags .= '<br/>{page_list} - ' . __( 'A list of pages unlocked through each download purchased', 'edd_cr' );
-
-	return $tags;
-}
-add_filter( 'edd_purchase_receipt_template_tags_description', 'edd_cr_add_template_tags_description', 200, 1 );
-
 
 /**
  * Get pages restricted to the purchased files
