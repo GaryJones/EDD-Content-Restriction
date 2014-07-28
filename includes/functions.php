@@ -194,7 +194,7 @@ add_action( 'edd_payment_receipt_after', 'edd_cr_add_to_receipt', 1, 2 );
 /**
  * Registers our email tags
  *
- * @since		1.5.3
+ * @since		1.5.4
  */
 function edd_cr_register_email_tags() {
 	edd_add_email_tag( 'page_list', __( 'Shows a list of restricted pages the customer has access to', 'edd_cr' ), 'edd_cr_add_template_tags' );
