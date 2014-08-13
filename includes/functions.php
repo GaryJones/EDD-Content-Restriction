@@ -31,8 +31,10 @@ function edd_cr_filter_content( $content ) {
 	$restricted_variable = get_post_meta( $post->ID, '_edd_cr_restricted_to_variable', true ); // for variable prices
 	$restricted_variable = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
 
-	if( $restricted_to && ! current_user_can( 'edit_post', $post->ID ) )
+	if( $restricted_to ) {
 		return edd_cr_filter_restricted_content( $content, $restricted_to, $restricted_variable, null, $post->ID );
+	}
+
 	return $content;
 }
 add_filter( 'the_content', 'edd_cr_filter_content' );
@@ -53,6 +55,10 @@ add_filter( 'the_content', 'edd_cr_filter_content' );
 function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $price_id = null, $message = null, $post_id = 0, $class = '' ) {
 
 	global $user_ID;
+
+	if( current_user_can( 'edit_post', $post_id ) ) {
+		return do_shortcode( $content );
+	}
 
 	$is_restricted  = true;
 	$multi_message  = __( 'This content is restricted to buyers.', 'edd_cr' );
