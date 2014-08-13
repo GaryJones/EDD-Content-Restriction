@@ -3,7 +3,7 @@
 Plugin Name: Easy Digital Downloads - Content Restriction
 Plugin URL: http://easydigitaldownloads.com/extension/content-restriction
 Description: Allows you to restrict content from posts, pages, and custom post types to only those users who have purchased certain products. Also includes bbPress support.
-Version: 1.5.4
+Version: 1.5.5
 Author: Pippin Williamson
 Author URI: http://pippinsplugins.com
 Contributors: mordauk, ghost1227
@@ -49,7 +49,7 @@ if( !class_exists( 'EDD_Content_Restriction' ) ) {
 			if( !defined( 'EDD_CR_PLUGIN_URL' ) )
 				define( 'EDD_CR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-			define( 'EDD_CR_VERSION', '1.5.4' );
+			define( 'EDD_CR_VERSION', '1.5.5' );
 
 			$this->init();
 			$this->includes();
