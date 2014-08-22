@@ -41,7 +41,7 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
 		 * @static
 		 * @return		object self::$instance
 		 */
-		public static function get_instance() {
+		public static function instance() {
 			if( ! self::$instance ) {
 				self::$instance = new EDD_Content_Restriction();
 				self::$instance->setup_constants();
