@@ -90,6 +90,8 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
 			if( class_exists( 'bbPress' ) ) {
 				require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/modules/bbpress.php';
 			}
+
+			require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/modules/menus.php';
 		}
 
 
@@ -136,9 +138,42 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
         private function hooks() {
         	// Handle licensing
             if( class_exists( 'EDD_License' ) ) {
-                $license = new EDD_License( __FILE__, 'Content Restriction', EDD_CONTENT_RESTRICTON_VER, 'Pippin Williamson' );
+                $license = new EDD_License( __FILE__, 'Content Restriction', EDD_CONTENT_RESTRICTION_VER, 'Pippin Williamson' );
             }
+
+            // Register settings
+            add_filter( 'edd_settings_extensions', array( $this, 'settings' ), 1 );
         }
+
+
+        /**
+         * Add settings
+         *
+         * @access      public
+         * @since       1.0.0
+         * @param       array $settings The existing EDD settings array
+         * @return      array The modified EDD settings array
+         */
+        public function settings( $settings ) {
+            $new_settings = array(
+                array(
+                    'id'    => 'edd_content_restriction_settings',
+                    'name'  => '<strong>' . __( 'Content Restriction Settings', 'edd_cr' ) . '</strong>',
+                    'desc'  => __( 'Configure Content Restriction Settings', 'edd_cr' ),
+                    'type'  => 'header',
+                ),
+                array(
+                    'id'    => 'edd_content_restriction_hide_menu_items',
+                    'name'  => __( 'Hide Menu Items', 'edd_cr' ),
+                    'desc'  => __( 'Should we hide menu items a user doesn\'t have access to?', 'edd_cr' ),
+                    'type'  => 'checkbox',
+                )
+            );
+
+            $settings = array_merge( $settings, $new_settings );
+
+	        return $settings;
+	    }
 	}
 }
 
