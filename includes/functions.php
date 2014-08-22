@@ -145,7 +145,7 @@ function edd_cr_check_for_variations() {
 
 			if( $prices ) {
 				$response  = '<select name="edd_cr_download_price">';
-				$response .= '<option value="all">' . __( 'All prices', 'edd_cr' ) . '</option>';
+				$response .= '<option value="all">' . __( 'All Variants', 'edd_cr' ) . '</option>';
 
 				foreach( $prices as $key => $price ) {
 					$response .= '<option value="' . $key . '">' . $price['name']  . '</option>';

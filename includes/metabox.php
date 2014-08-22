@@ -71,7 +71,7 @@ function edd_cr_render_meta_box() {
 				if( edd_has_variable_prices( $restricted_to ) ) {
 					$prices = get_post_meta( $restricted_to, 'edd_variable_prices', true );
 					echo '<select name="edd_cr_download_price">';
-					echo '<option value="all">' . __( 'All Prices', 'edd_cr' ) . '</option>';
+					echo '<option value="all">' . __( 'All Variants', 'edd_cr' ) . '</option>';
 					foreach ( $prices as $key => $price ) {
 						echo '<option value="' . absint( $key ) . '" ' . selected( $key, $restricted_variable, false ) . '>' .esc_html( $price['name'] )  . '</option>';
 					}
