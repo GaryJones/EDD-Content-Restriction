@@ -2,7 +2,7 @@
 /**
  * bbPress Functions
  *
- * @package     EDD\ContentRestriction\bbPress
+ * @package     EDD\ContentRestriction\Modules\bbPress
  * @copyright	Copyright (c) 2013-2014, Pippin Williamson
  * @since       1.0.0
  */
