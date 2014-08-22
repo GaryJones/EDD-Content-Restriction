@@ -63,7 +63,7 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
          */
         private function setup_constants() {
             // Plugin version
-            define( 'EDD_CONTENT_RESTRICTION_VER', '1.2.3' );
+            define( 'EDD_CONTENT_RESTRICTION_VER', '1.6.0' );
 
             // Plugin path
             define( 'EDD_CONTENT_RESTRICTION_DIR', plugin_dir_path( __FILE__ ) );
