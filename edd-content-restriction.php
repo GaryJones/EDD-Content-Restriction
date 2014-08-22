@@ -63,13 +63,13 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
          */
         private function setup_constants() {
             // Plugin version
-            define( 'EDD_CONTENT_RESTRICTON_VER', '1.2.3' );
+            define( 'EDD_CONTENT_RESTRICTION_VER', '1.2.3' );
 
             // Plugin path
-            define( 'EDD_CONTENT_RESTRICTON_DIR', plugin_dir_path( __FILE__ ) );
+            define( 'EDD_CONTENT_RESTRICTION_DIR', plugin_dir_path( __FILE__ ) );
 
             // Plugin URL
-            define( 'EDD_CONTENT_RESTRICTON_URL', plugin_dir_url( __FILE__ ) );
+            define( 'EDD_CONTENT_RESTRICTION_URL', plugin_dir_url( __FILE__ ) );
         }
 
 
@@ -81,14 +81,14 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
 		 * @return		void
 		 */
 		public function includes() {
-			require_once EDD_CONTENT_RESTRICTON_DIR . 'includes/functions.php';
-			require_once EDD_CONTENT_RESTRICTON_DIR . 'includes/metabox.php';
-			require_once EDD_CONTENT_RESTRICTON_DIR . 'includes/scripts.php';
-			require_once EDD_CONTENT_RESTRICTON_DIR . 'includes/shortcodes.php';
+			require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/functions.php';
+			require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/metabox.php';
+			require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/scripts.php';
+			require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/shortcodes.php';
 
 			// Check for bbPress
 			if( class_exists( 'bbPress' ) ) {
-				require_once EDD_CONTENT_RESTRICTON_DIR . 'includes/bbpress.php';
+				require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/modules/bbpress.php';
 			}
 		}
 
@@ -102,7 +102,7 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
          */
         public function load_textdomain() {
             // Set filter for language directory
-            $lang_dir = EDD_CONTENT_RESTRICTON_DIR . '/languages/';
+            $lang_dir = EDD_CONTENT_RESTRICTION_DIR . '/languages/';
             $lang_dir = apply_filters( 'edd_cr_languages_directory', $lang_dir );
 
             // Traditional WordPress plugin locale filter
