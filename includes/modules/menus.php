@@ -16,8 +16,20 @@ function edd_cr_hide_menu_items( $items, $args ) {
 		foreach( $items as $item_id => $item_data ) {
 			$restricted = edd_cr_is_restricted( $item_data->object_id );
 
-			if( ! empty( $restricted ) ) {
-				if( ! edd_has_user_purchased( get_current_user_id(), $restricted ) && ! current_user_can( 'edit_post', $restricted ) ) {
+			if( ! empty( $restricted ) && ! current_user_can( 'edit_post', $item_data->object_id ) ) {
+				if( edd_has_variable_prices( $restricted ) ) {
+					$restricted_var = get_post_meta( $item_data->object_id, '_edd_cr_restricted_to_variable', true );
+
+					if( $restricted_var != 'ALL' ) {
+						$purchased = edd_has_user_purchased( get_current_user_id(), $restricted, $restricted_var );
+					} else {
+						$purchased = edd_has_user_purchased( get_current_user_id(), $restricted );
+					}
+				} else {
+					$purchased = edd_has_user_purchased( get_current_user_id(), $restricted );
+				}
+
+				if( ! $purchased ) {
 					unset( $items[$item_id] );
 				}
 			}
