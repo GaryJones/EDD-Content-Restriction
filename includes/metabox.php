@@ -13,17 +13,32 @@ if( ! defined( 'ABSPATH' ) ) exit;
 
 
 /**
- * Add metabox
+ * Register meta box
+ *
+ * @since       1.6.0
+ * @return      void
+ */
+function edd_cr_add_meta_box() {
+	add_meta_box(
+        'content-restriction',
+        __( 'Content Restriction', 'edd_cr' ),
+        'edd_cr_render_meta_box',
+        '',
+        'normal',
+        'default'
+    );
+}
+add_action( 'add_meta_boxes', 'edd_cr_add_meta_box' );
+
+
+/**
+ * Render metabox
  *
  * @global		object $post The post/page we are editing
  * @return		void
  */
-function edd_cr_submitbox() {
+function edd_cr_render_meta_box() {
 	global $post;
-
-	if( ! is_object( $post ) ) {
-		return;
-	}
 
 	$post_types		= get_post_types( array( 'show_ui' => true ) );
 	$excluded_types	= array( 'download', 'edd_payment', 'reply', 'acf', 'deprecated_log' );
@@ -68,7 +83,6 @@ function edd_cr_submitbox() {
 		}
 	}
 }
-add_action( 'post_submitbox_start', 'edd_cr_submitbox', 0 );
 
 
 /**
