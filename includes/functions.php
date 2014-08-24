@@ -183,10 +183,10 @@ function edd_cr_add_to_receipt( $payment, $edd_receipt_args ) {
 	echo '</tbody></table><h3>' . __( 'Pages', 'edd_cr' ) . '</h3><table><tbody>';
 
 	echo '<tr><td>';
-	echo '<ul style="margin: 0; padding: 0;">';
+	echo '<ul class="edd-cr-receipt">';
 
 	foreach( $meta as $post ) {
-		echo '<li style="list-style: none; margin: 0 0 8px 10px;">';
+		echo '<li>';
 		echo '<a href="' . get_permalink( $post->ID ) . '" class="edd_download_file_link">' . $post->post_title . '</a>';
 		echo '</li>';
 	}
