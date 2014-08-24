@@ -96,7 +96,7 @@ function edd_cr_render_option_row( $key, $args = array(), $post ) {
 	$restricted_variable	= get_post_meta( $post->ID, '_edd_cr_restricted_to_variable', true ); // for variable prices
 	?>
 	<td>
-		<select name="edd_cr_download_id[<?php echo $key; ?>]" id="edd_cr_download_id[<?php echo $key; ?>]">
+		<select name="edd_cr_download_id[<?php echo $key; ?>]" id="edd_cr_download_id[<?php echo $key; ?>]" class="edd_cr_download_id">
 		    <option value='' disabled selected style='display:none;'><?php echo sprintf( __( 'Select A %s'), edd_get_label_singular() ); ?></option>
 			<?php
 				foreach ( $downloads as $download ) {
@@ -106,18 +106,20 @@ function edd_cr_render_option_row( $key, $args = array(), $post ) {
 		</select>
 	</td>
 	<td>
-		<img src="<?php echo admin_url( '/images/wpspin_light.gif' ); ?>" class="waiting" id="edd_cr_loading" style="display:none;"/>
 		<?php
-			if( edd_has_variable_prices( $restricted_to ) ) {
-				$prices = get_post_meta( $restricted_to, 'edd_variable_prices', true );
-				echo '<select name="edd_cr_download_price">';
+			if( edd_has_variable_prices( $restricted_to[$key] ) ) {
+				$prices = get_post_meta( $restricted_to[$key], 'edd_variable_prices', true );
+				echo '<select name="edd_cr_download_price[' . $key . ']">';
 				echo '<option value="all">' . __( 'All Variants', 'edd_cr' ) . '</option>';
 				foreach ( $prices as $key => $price ) {
-					echo '<option value="' . absint( $key ) . '" ' . selected( $key, $restricted_variable, false ) . '>' .esc_html( $price['name'] )  . '</option>';
+					echo '<option value="' . absint( $key ) . '" ' . selected( $key, $restricted_variable[$key], false ) . '>' . esc_html( $price['name'] )  . '</option>';
 				}
 				echo '</select>';
+			} else {
+				echo '<p>' . __( 'None', 'edd_cr' ) . '</p>';
 			}
 		?>
+		<img src="<?php echo admin_url( '/images/wpspin_light.gif' ); ?>" class="waiting edd_cr_loading" style="display:none;"/>
 	</td>
 	<td>
 		<a href="#" class="edd_remove_repeatable" data-type="price" style="background: url(<?php echo admin_url('/images/xit.gif'); ?>) no-repeat;">&times;</a>

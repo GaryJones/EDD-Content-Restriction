@@ -14,8 +14,17 @@
 
 .edd-cr-option-wrapper td {
 	width: 48%;
+	vertical-align: text-bottom;
 }
 
 .edd-cr-option-wrapper td select {
 	width: 100%;
+}
+
+.edd-cr-option-wrapper p {
+	display: inline-block;
+}
+
+.edd_cr_loading {
+	vertical-align: text-bottom;
 }
