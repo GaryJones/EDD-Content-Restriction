@@ -107,16 +107,16 @@ function edd_cr_render_option_row( $key, $args = array(), $post ) {
 	</td>
 	<td>
 		<?php
-			if( edd_has_variable_prices( $restricted_to[$key] ) ) {
+			if( isset( $restricted_to[$key] ) && edd_has_variable_prices( $restricted_to[$key] ) ) {
 				$prices = get_post_meta( $restricted_to[$key], 'edd_variable_prices', true );
-				echo '<select name="edd_cr_download_price[' . $key . ']">';
+				echo '<select class="edd_price_options_select" name="edd_cr_download_price[' . $key . ']">';
 				echo '<option value="all">' . __( 'All Variants', 'edd_cr' ) . '</option>';
 				foreach ( $prices as $key => $price ) {
 					echo '<option value="' . absint( $key ) . '" ' . selected( $key, $restricted_variable[$key], false ) . '>' . esc_html( $price['name'] )  . '</option>';
 				}
 				echo '</select>';
 			} else {
-				echo '<p>' . __( 'None', 'edd_cr' ) . '</p>';
+				echo '<p class="edd_cr_variable_none">' . __( 'None', 'edd_cr' ) . '</p>';
 			}
 		?>
 		<img src="<?php echo admin_url( '/images/wpspin_light.gif' ); ?>" class="waiting edd_cr_loading" style="display:none;"/>

@@ -1,26 +1,38 @@
-/*global jQuery, document, ajaxurl*/
+/*global jQuery, document, ajaxurl, window, console*/
 jQuery(document).ready(function ($) {
     "use strict";
-    $('.edd_cr_download_id').change(function () {
-        var selected_download = $('option:selected', this).val(), edd_cr_nonce, data;
+    $('body').on('change', 'select.edd_cr_download_id', function () {
+        var $this = $(this), download_id = $this.val(), postData;
 
-        if (selected_download !== 0) {
-            edd_cr_nonce = $('#edd-cr-nonce').val();
-            data = {
-                action: 'edd_cr_check_for_variations',
-                download_id: selected_download,
-                nonce: edd_cr_nonce
+        if (parseInt(download_id) > 0) {
+            $this.parent().next().find('.edd_cr_loading').show();
+
+            postData = {
+                action : 'edd_check_for_download_price_variations',
+                download_id: download_id
             };
 
-            $('.edd_cr_loading').show();
-
-            $.post(ajaxurl, data, function (response) {
-                $('#edd_download_variables').html(response);
-                $('.edd_cr_loading').hide();
+            $.ajax({
+                type: "POST",
+                data: postData,
+                url: ajaxurl,
+                success: function (response) {
+                    if (response) {
+                        $this.parent().next('td').find('.edd_cr_variable_none').hide();
+                        $this.parent().next('td').find('select').remove();
+                        $(response).appendTo($this.parent().next('td'));
+                    } else {
+                        $this.parent().next('td').find('select').remove();
+                        $this.parent().next('td').find('.edd_cr_variable_none').show();
+                    }
+                }
+            }).fail(function (data) {
+                if (window.console && window.console.log) {
+                    console.log(data);
+                }
             });
-        } else {
-            $('#edd_download_variables').html('');
-            $('.edd_cr_loading').hide();
+
+            $this.parent().next().find('.edd_cr_loading').hide();
         }
     });
 });
