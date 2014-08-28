@@ -51,7 +51,6 @@ function edd_cr_render_meta_box( $post_id ) {
 
     $downloads              = get_posts( array( 'post_type' => 'download', 'posts_per_page' => -1 ) );
     $restricted_to          = get_post_meta( $post->ID, '_edd_cr_restricted_to', true );
-    $restricted_variable    = get_post_meta( $post->ID, '_edd_cr_restricted_to_variable', true ); // for variable prices
 
     if ( $downloads ) {
         ?>
@@ -65,9 +64,19 @@ function edd_cr_render_meta_box( $post_id ) {
                     <th style="width: 2%"></th>
                 </thead>
                 <tbody>
-                    <tr class="edd-cr-option-wrapper edd_repeatable_row">
-                        <?php do_action( 'edd_cr_render_option_row', 0, array(), $post_id ); ?>
-                    </tr>
+                    <?php
+                        if( ! empty( $restricted_to ) ) {
+                            foreach( $restricted_to as $key => $value ) {
+                                echo '<tr class="edd-cr-option-wrapper edd_repeatable_row">';
+                                do_action( 'edd_cr_render_option_row', $key, array(), $post_id );
+                                echo '</tr>';
+                            }
+                        } else {
+                            echo '<tr class="edd-cr-option-wrapper edd_repeatable_row">';
+                            do_action( 'edd_cr_render_option_row', 0, array(), $post_id );
+                            echo '</tr>';
+                        }
+                    ?>
                     <tr>
                         <td class="submit" colspan="4" style="float: none; clear:both; background:#fff;">
                             <a class="button-secondary edd_add_repeatable" style="margin: 6px 0;"><?php _e( 'Add New Download', 'edd_cr' ); ?></a>
@@ -96,7 +105,7 @@ function edd_cr_render_option_row( $key, $args = array(), $post ) {
     $restricted_variable    = get_post_meta( $post->ID, '_edd_cr_restricted_to_variable', true ); // for variable prices
     ?>
     <td>
-        <select name="edd_cr_download_id[<?php echo $key; ?>]" id="edd_cr_download_id[<?php echo $key; ?>]" class="edd_cr_download_id">
+        <select name="edd_cr_download[<?php echo $key; ?>][download]" id="edd_cr_download[<?php echo $key; ?>][download]" class="edd_cr_download" data-key="<?php echo esc_attr( $key ); ?>">
             <option value='' disabled selected style='display:none;'><?php echo sprintf( __( 'Select A %s'), edd_get_label_singular() ); ?></option>
             <?php
                 foreach ( $downloads as $download ) {
@@ -109,7 +118,7 @@ function edd_cr_render_option_row( $key, $args = array(), $post ) {
         <?php
             if( isset( $restricted_to[$key] ) && edd_has_variable_prices( $restricted_to[$key] ) ) {
                 $prices = get_post_meta( $restricted_to[$key], 'edd_variable_prices', true );
-                echo '<select class="edd_price_options_select" name="edd_cr_download_price[' . $key . ']">';
+                echo '<select class="edd_cr_download" name="edd_cr_download[' . $key . '][price_id]">';
                 echo '<option value="all">' . __( 'All Variants', 'edd_cr' ) . '</option>';
                 foreach ( $prices as $key => $price ) {
                     echo '<option value="' . absint( $key ) . '" ' . selected( $key, $restricted_variable[$key], false ) . '>' . esc_html( $price['name'] )  . '</option>';
@@ -140,15 +149,10 @@ add_action( 'edd_cr_render_option_row', 'edd_cr_render_option_row', 10, 3 );
  * @return      void
  */
 function edd_cr_save_meta_data( $post_id ) {
+    if( ! isset( $_POST['edd_cr_download'] ) || ! is_array( $_POST['edd_cr_download'] ) ) return;
+
     if( isset( $_POST['edd-cr-nonce'] ) && wp_verify_nonce( $_POST['edd-cr-nonce'], 'edd-cr-nonce' ) ) {
-        $restricted_to  = sanitize_text_field( $_POST['edd_cr_download_id'] );
-        $price_option   = isset( $_POST['edd_cr_download_price'] ) ? sanitize_text_field( $_POST['edd_cr_download_price'] ) : false;
-
-        update_post_meta( $post_id, '_edd_cr_restricted_to', $restricted_to );
-
-        if( $price_option !== false ) {
-            update_post_meta( $post_id, '_edd_cr_restricted_to_variable', $price_option );
-        }
+        update_post_meta( $post_id, '_edd_cr_restricted_to', $_POST['edd_cr_download'] );
 
         do_action( 'edd_cr_save_meta_data', $post_id, $_POST );
     }
