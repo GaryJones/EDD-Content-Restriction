@@ -68,12 +68,12 @@ function edd_cr_render_meta_box( $post_id ) {
                         if( ! empty( $restricted_to ) ) {
                             foreach( $restricted_to as $key => $value ) {
                                 echo '<tr class="edd-cr-option-wrapper edd_repeatable_row">';
-                                do_action( 'edd_cr_render_option_row', $key, array(), $post_id );
+                                do_action( 'edd_cr_render_option_row', $key, $post_id );
                                 echo '</tr>';
                             }
                         } else {
                             echo '<tr class="edd-cr-option-wrapper edd_repeatable_row">';
-                            do_action( 'edd_cr_render_option_row', 0, array(), $post_id );
+                            do_action( 'edd_cr_render_option_row', 0, $post_id );
                             echo '</tr>';
                         }
                     ?>
@@ -99,29 +99,28 @@ function edd_cr_render_meta_box( $post_id ) {
  * @since       1.6.0
  * @param       object $post The post we are editing
  */
-function edd_cr_render_option_row( $key, $args = array(), $post ) {
+function edd_cr_render_option_row( $key, $post ) {
     $downloads              = get_posts( array( 'post_type' => 'download', 'posts_per_page' => -1 ) );
     $restricted_to          = get_post_meta( $post->ID, '_edd_cr_restricted_to', true );
-    $restricted_variable    = get_post_meta( $post->ID, '_edd_cr_restricted_to_variable', true ); // for variable prices
     ?>
     <td>
         <select name="edd_cr_download[<?php echo $key; ?>][download]" id="edd_cr_download[<?php echo $key; ?>][download]" class="edd_cr_download" data-key="<?php echo esc_attr( $key ); ?>">
             <option value='' disabled selected style='display:none;'><?php echo sprintf( __( 'Select A %s'), edd_get_label_singular() ); ?></option>
             <?php
                 foreach ( $downloads as $download ) {
-                    echo '<option value="' . absint( $download->ID ) . '" ' . selected( $restricted_to[$key], $download->ID, false ) . '>' . esc_html( get_the_title( $download->ID ) ) . '</option>';
+                    echo '<option value="' . absint( $download->ID ) . '" ' . selected( $restricted_to[$key]['download'], $download->ID, false ) . '>' . esc_html( get_the_title( $download->ID ) ) . '</option>';
                 }
             ?>
         </select>
     </td>
     <td>
         <?php
-            if( isset( $restricted_to[$key] ) && edd_has_variable_prices( $restricted_to[$key] ) ) {
-                $prices = get_post_meta( $restricted_to[$key], 'edd_variable_prices', true );
+            if( isset( $restricted_to[$key]['price_id'] ) ) {
+                $prices = get_post_meta( $restricted_to[$key]['download'], 'edd_variable_prices', true );
                 echo '<select class="edd_cr_download" name="edd_cr_download[' . $key . '][price_id]">';
-                echo '<option value="all">' . __( 'All Variants', 'edd_cr' ) . '</option>';
-                foreach ( $prices as $key => $price ) {
-                    echo '<option value="' . absint( $key ) . '" ' . selected( $key, $restricted_variable[$key], false ) . '>' . esc_html( $price['name'] )  . '</option>';
+                echo '<option value="all" ' . selected( 'all', $restricted_to[$key]['price_id'], false ) . '>' . __( 'All Variants', 'edd_cr' ) . '</option>';
+                foreach ( $prices as $id => $data ) {
+                    echo '<option value="' . absint( $key ) . '" ' . selected( $id, $restricted_to[$key]['price_id'], false ) . '>' . esc_html( $data['name'] )  . '</option>';
                 }
                 echo '</select>';
             } else {
@@ -135,7 +134,7 @@ function edd_cr_render_option_row( $key, $args = array(), $post ) {
     </td>
     <?php
 
-    do_action( 'edd_cr_metabox', $post->ID, $restricted_to, $restricted_variable );
+    do_action( 'edd_cr_metabox', $post->ID, $restricted_to );
     echo wp_nonce_field( 'edd-cr-nonce', 'edd-cr-nonce' );
 }
 add_action( 'edd_cr_render_option_row', 'edd_cr_render_option_row', 10, 3 );
