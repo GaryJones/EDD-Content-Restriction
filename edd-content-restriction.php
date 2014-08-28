@@ -18,43 +18,43 @@ if( ! defined( 'ABSPATH' ) ) exit;
 
 if( ! class_exists( 'EDD_Content_Restriction' ) ) {
 
-	/**
+    /**
      * Main EDD_Content_Restriction class
      *
      * @since       1.4.0
      */
-	class EDD_Content_Restriction {
+    class EDD_Content_Restriction {
 
 
-		/**
+        /**
          * @var         EDD_Content_Restriction $instance The one true EDD_Content_Restriction
          * @since       1.4.0
          */
-		private static $instance;
+        private static $instance;
 
 
-		/**
-		 * Get active instance
-		 *
-		 * @since		1.3.0
-		 * @access		public
-		 * @static
-		 * @return		object self::$instance
-		 */
-		public static function instance() {
-			if( ! self::$instance ) {
-				self::$instance = new EDD_Content_Restriction();
-				self::$instance->setup_constants();
+        /**
+         * Get active instance
+         *
+         * @since       1.3.0
+         * @access      public
+         * @static
+         * @return      object self::$instance
+         */
+        public static function instance() {
+            if( ! self::$instance ) {
+                self::$instance = new EDD_Content_Restriction();
+                self::$instance->setup_constants();
                 self::$instance->includes();
                 self::$instance->load_textdomain();
                 self::$instance->hooks();
-			}
+            }
 
-			return self::$instance;
-		}
+            return self::$instance;
+        }
 
 
-		/**
+        /**
          * Setup plugin constants
          *
          * @access      private
@@ -74,28 +74,28 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
 
 
         /**
-		 * Includes
-		 *
-		 * @access		public
-		 * @since		1.3.0
-		 * @return		void
-		 */
-		public function includes() {
-			require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/functions.php';
-			require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/metabox.php';
-			require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/scripts.php';
-			require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/shortcodes.php';
+         * Includes
+         *
+         * @access      public
+         * @since       1.3.0
+         * @return      void
+         */
+        public function includes() {
+            require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/functions.php';
+            require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/metabox.php';
+            require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/scripts.php';
+            require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/shortcodes.php';
 
-			// Check for bbPress
-			if( class_exists( 'bbPress' ) ) {
-				require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/modules/bbpress.php';
-			}
+            // Check for bbPress
+            if( class_exists( 'bbPress' ) ) {
+                require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/modules/bbpress.php';
+            }
 
-			require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/modules/menus.php';
-		}
+            require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/modules/menus.php';
+        }
 
 
-		/**
+        /**
          * Internationalization
          *
          * @access      public
@@ -136,7 +136,7 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
          * @return      void
          */
         private function hooks() {
-        	// Handle licensing
+            // Handle licensing
             if( class_exists( 'EDD_License' ) ) {
                 $license = new EDD_License( __FILE__, 'Content Restriction', EDD_CONTENT_RESTRICTION_VER, 'Pippin Williamson' );
             }
@@ -172,9 +172,9 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
 
             $settings = array_merge( $settings, $new_settings );
 
-	        return $settings;
-	    }
-	}
+            return $settings;
+        }
+    }
 }
 
 
