@@ -8,7 +8,7 @@ jQuery(document).ready(function ($) {
             $this.parent().next().find('.edd_cr_loading').show();
 
             postData = {
-                action : 'edd_check_for_download_price_variations',
+                action : 'edd_cr_check_for_download_price_variations',
                 download_id: download_id
             };
 

@@ -82,6 +82,7 @@ if( ! class_exists( 'EDD_Content_Restriction' ) ) {
          */
         public function includes() {
             require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/functions.php';
+            require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/ajax-functions.php';
             require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/metabox.php';
             require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/scripts.php';
             require_once EDD_CONTENT_RESTRICTION_DIR . 'includes/shortcodes.php';
