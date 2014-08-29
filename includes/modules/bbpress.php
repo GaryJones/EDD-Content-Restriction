@@ -26,17 +26,31 @@ function edd_cr_filter_bbp_topics_list( $has_topics, $query ) {
     // Moderators can see everything
     if( ! current_user_can( 'moderate' ) ) {
         if( bbp_is_single_forum() ) {
-            $is_restricted      = false;
+            $is_restricted      = true;
             $restricted_to      = edd_cr_is_restricted( bbp_get_forum_id() );
-            $restricted_variable= get_post_meta( bbp_get_forum_id(), '_edd_cr_restricted_to_variable', true ); // for variable prices
-            $restricted_variable= ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
-            $is_restricted      = ( $restricted_to && ( ! edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) || ! is_user_logged_in() ) );
 
-            if( (int) get_post_field( 'post_author', $restricted_to ) === get_current_user_id() ) {
-                $is_restricted = false;
+            foreach( $restricted_to as $item => $data ) {
+                if( edd_has_variable_prices( $data['download'] ) ) {
+                    if( $data['price_id'] != 'ALL' ) {
+                        if( edd_has_user_purchased( $user_ID, $data['download'], $data['price_id'] ) ) {
+                            $is_restricted = false;
+                        }
+                    } else {
+                        if( edd_has_user_purchased( $user_ID, $data['download'] ) ) {
+                            $is_restricted = false;
+                        }
+                    }
+                } else {
+                    if( edd_has_user_purchased( $user_ID, $data['download'] ) ) {
+                        $is_restricted = false;
+                    }
+                }
+
+                if( (int) get_post_field( 'post_author', $data['download'] ) === $user_ID ) {
+                    $is_restricted = false;
             }
 
-            $is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, bbp_is_single_forum(), $restricted_to, $user_ID, $restricted_variable );
+            $is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, bbp_is_single_forum(), $restricted_to, $user_ID );
 
             if( $is_restricted ) {
                 $return = false;
@@ -67,36 +81,62 @@ function edd_cr_filter_replies( $content, $reply_id ) {
     global $user_ID, $post;
 
     if( ! current_user_can( 'moderate' ) ) {
-        $has_access     = true;
-        $restricted_to  = edd_cr_is_restricted( bbp_get_topic_id() );
-        $restricted_id  = bbp_get_topic_id();
+        $is_restricted    = true;
+        $restricted_to    = edd_cr_is_restricted( bbp_get_topic_id() );
+        $restricted_id    = bbp_get_topic_id();
+        $restricted_count = count( $restricted_to );
+        $products         = array();
 
         if( ! $restricted_to ) {
             $restricted_to = edd_cr_is_restricted( bbp_get_forum_id() ); // check for parent forum restriction
             $restricted_id = bbp_get_forum_id();
         }
 
-        $restricted_variable    = get_post_meta( $restricted_id, '_edd_cr_restricted_to_variable', true ); // for variable prices
-        $restricted_variable    = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
-        $is_restricted          = $restricted_to && ! edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable );
+        foreach( $restricted_to as $item => $data ) {
+            if( edd_has_variable_prices( $data['download'] ) ) {
+                if( $data['price_id'] != 'ALL' ) {
+                    $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . ' - ' . edd_get_price_option_name( $data['download'], $data['price_id'] ) . '</a>';
 
-        if( (int) get_post_field( 'post_author', $restricted_to ) === get_current_user_id() ) {
-            $is_restricted = false;
+                    if( edd_has_user_purchased( $user_ID, $data['download'], $data['price_id'] ) ) {
+                        $is_restricted = false;
+                    }
+                } else {
+                    $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . '</a>';
+
+                    if( edd_has_user_purchased( $user_ID, $data['download'] ) ) {
+                        $is_restricted = false;
+                    }
+                }
+            } else {
+                $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . '</a>';
+
+                if( edd_has_user_purchased( $user_ID, $data['download'] ) ) {
+                    $is_restricted = false;
+                }
+            }
+
+            if( (int) get_post_field( 'post_author', $data['download'] ) === $user_ID ) {
+                $is_restricted = false;
+            }
         }
 
-        $is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted_id, $restricted_to, $user_ID, $restricted_variable );
+        $is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted_id, $restricted_to, $user_ID );
 
         if( $is_restricted ) {
-            if( $restricted_variable ) {
-                $return = '<div class="edd_cr_message">' . sprintf( __( 'This content is restricted to buyers of %s %s.', 'edd_cr' ),
-                    edd_get_price_option_name( $restricted_to, $restricted_variable ),
-                    '<a href="' . get_permalink( $restricted_to ) . '">' . get_the_title( $restricted_to ) . '</a>'
-                ) . '</div>';
+            if( $restricted_count > 1 ) {
+                $return  = __( 'This content is restricted to buyers of:', 'edd_cr' );
+                $return .= '<ul>';
+
+                foreach( $products as $id => $product ) {
+                    $return .= '<li>' . $product . '</li>';
+                }
+
+                $return .= '</ul>';
             } else {
-                $return = '<div class="edd_cr_message">' . sprintf(
+                $return = sprintf(
                     __( 'This content is restricted to buyers of %s.', 'edd_cr' ),
-                    '<a href="' . get_permalink( $restricted_to ) . '">' . get_the_title( $restricted_to ) . '</a>'
-                ) . '</div>';
+                    $products[0]
+                );
             }
         }
     } else {
@@ -157,7 +197,7 @@ function edd_cr_hide_new_replies_form( $form ) {
     global $user_ID;
 
     if( ! current_user_can( 'moderate' ) ) {
-        $is_restricted          = false;
+        $is_restricted          = true;
         $restricted_to          = edd_cr_is_restricted( bbp_get_topic_id() );
         $restricted_id          = bbp_get_topic_id();
 
@@ -166,18 +206,29 @@ function edd_cr_hide_new_replies_form( $form ) {
             $restricted_id = bbp_get_forum_id();
         }
 
-        $restricted_variable = get_post_meta( $restricted_id, '_edd_cr_restricted_to_variable', true ); // for variable prices
-        $restricted_variable = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
+        foreach( $restricted_to as $item => $data ) {
+            if( edd_has_variable_prices( $data['download'] ) ) {
+                if( $data['price_id'] != 'ALL' ) {
+                    if( edd_has_user_purchased( $user_ID, $data['download'], $data['price_id'] ) ) {
+                        $is_restricted = false;
+                    }
+                } else {
+                    if( edd_has_user_purchased( $user_ID, $data['download'] ) ) {
+                        $is_restricted = false;
+                    }
+                }
+            } else {
+                if( edd_has_user_purchased( $user_ID, $data['download'] ) ) {
+                    $is_restricted = false;
+                }
+            }
 
-        if( $restricted_to && ! edd_has_user_purchased( $user_ID, $restricted_to, $restricted_variable ) ) {
-            $is_restricted = true;
+            if( (int) get_post_field( 'post_author', $data['download'] ) === $user_ID ) {
+                $is_restricted = false;
+            }
         }
-
-        if( (int) get_post_field( 'post_author', $restricted_to ) === get_current_user_id() ) {
-            $is_restricted = false;
-        }
-
-        $is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted_id, $restricted_to, $user_ID, $restricted_variable );
+            
+        $is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted_id, $restricted_to, $user_ID );
 
         $return = $is_restricted ? false : true;
     } else {

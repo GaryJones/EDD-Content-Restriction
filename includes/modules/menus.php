@@ -17,16 +17,16 @@ function edd_cr_hide_menu_items( $items, $args ) {
             $restricted = edd_cr_is_restricted( $item_data->object_id );
 
             if( ! empty( $restricted ) && ! current_user_can( 'edit_post', $item_data->object_id ) ) {
-                if( edd_has_variable_prices( $restricted ) ) {
-                    $restricted_var = get_post_meta( $item_data->object_id, '_edd_cr_restricted_to_variable', true );
-
-                    if( $restricted_var != 'ALL' ) {
-                        $purchased = edd_has_user_purchased( get_current_user_id(), $restricted, $restricted_var );
+                foreach( $restricted as $item => $data ) {
+                    if( edd_has_variable_prices( $data['download'] ) ) {
+                        if( $data['price_id'] != 'ALL' ) {
+                            $purchased = edd_has_user_purchased( get_current_user_id(), $data['download'], $data['price_id'] );
+                        } else {
+                            $purchased = edd_has_user_purchased( get_current_user_id(), $data['download'] );
+                        }
                     } else {
-                        $purchased = edd_has_user_purchased( get_current_user_id(), $restricted );
+                        $purchased = edd_has_user_purchased( get_current_user_id(), $data['download'] );
                     }
-                } else {
-                    $purchased = edd_has_user_purchased( get_current_user_id(), $restricted );
                 }
 
                 if( ! $purchased ) {

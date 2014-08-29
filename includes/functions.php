@@ -28,12 +28,10 @@ function edd_cr_filter_content( $content ) {
         return $content;
     }
 
-    $restricted_to       = edd_cr_is_restricted( $post->ID );
-    $restricted_variable = get_post_meta( $post->ID, '_edd_cr_restricted_to_variable', true ); // for variable prices
-    $restricted_variable = ( $restricted_variable !== false && $restricted_variable != 'all' ) ? $restricted_variable : null;
+    $restricted = edd_cr_is_restricted( $post->ID );
 
-    if( $restricted_to ) {
-        $content = edd_cr_filter_restricted_content( $content, $restricted_to, $restricted_variable, null, $post->ID );
+    if( $restricted ) {
+        $content = edd_cr_filter_restricted_content( $content, $restricted, null, $post->ID );
     }
 
     return $content;
@@ -46,55 +44,60 @@ add_filter( 'the_content', 'edd_cr_filter_content' );
  *
  * @since       1.0.0
  * @param       string $content The content to filter
- * @param       int $download_id The ID of the referenced download
- * @param       int $price_id The (optional) ID of a variably priced item
+ * @param       array $restricted The items to which this is restricted
  * @param       string $message The message to display to users
  * @param       int $post_id The ID of the current post/page
  * @param       string $class Additional classes for the displayed error
  * @global      int $user_ID The ID of the current user
  * @return      string $content The content to display to the user
  */
-function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $price_id = null, $message = null, $post_id = 0, $class = '' ) {
+function edd_cr_filter_restricted_content( $content = '', $restricted = false, $message = null, $post_id = 0, $class = '' ) {
     global $user_ID;
 
     // If the current user can edit this post, it can't be restricted!
-    if( ! current_user_can( 'edit_post', $post_id ) ) {
-        $is_restricted  = true;
-        $multi_message  = __( 'This content is restricted to buyers.', 'edd_cr' );
+    if( ! current_user_can( 'edit_post', $post_id ) && $restricted ) {
+        $is_restricted    = true;
+        $restricted_count = count( $restricted );
+        $products         = array();
 
-        if( ! empty( $price_id ) ) {
-            $single_message = sprintf(
-                __( 'This content is restricted to buyers of the %s for %s.', 'edd_cr' ),
-                edd_get_price_option_name( $download_id, $price_id ),
-                '<a href="' . get_permalink( $download_id ) . '">' . get_the_title( $download_id ) . '</a>'
-            );
-        } elseif( ! is_array( $download_id ) ) {
-            $single_message = sprintf(
-                __( 'This content is restricted to buyers of %s.', 'edd_cr' ),
-                '<a href="' . get_permalink( $download_id ) . '">' . get_the_title( $download_id ) . '</a>'
-            );
-        }
+        foreach( $restricted as $item => $data ) {
+            if( edd_has_variable_prices( $data['download'] ) ) {
+                if( $data['price_id'] != 'ALL' ) {
+                    $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . ' - ' . edd_get_price_option_name( $data['download'], $data['price_id'] ) . '</a>';
 
-        if( ! empty( $single_message ) && is_null( $message ) && count( $download_id ) <= 1 ) {
-            $message = $single_message;
-        }
+                    if( edd_has_user_purchased( $user_ID, $data['download'], $data['price_id'] ) ) {
+                        $is_restricted = false;
+                    }
+                } else {
+                    $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . '</a>';
 
-        if ( is_array( $download_id ) && count( $download_id ) > 1 ) {
-            if( is_null( $message ) ) {
-                $message = $multi_message;
-            }
-
-            foreach( $download_id as $id ) {
-                if( edd_has_user_purchased( $user_ID, $id, $price_id ) ) {
+                    if( edd_has_user_purchased( $user_ID, $data['download'] ) ) {
+                        $is_restricted = false;
+                    }
+                }
+            } else {
+                $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . '</a>';
+                
+                if( edd_has_user_purchased( $user_ID, $data['download'] ) ) {
                     $is_restricted = false;
                 }
             }
-        } elseif( $download_id && edd_has_user_purchased( $user_ID, $download_id, $price_id ) ) {
-            $is_restricted = false;
+        }
 
-            if( is_null( $message ) ) {
-                $message = $single_message;
+        if( $restricted_count > 1 ) {
+            $message  = __( 'This content is restricted to buyers of:', 'edd_cr' );
+            $message .= '<ul>';
+
+            foreach( $products as $id => $product ) {
+                $message .= '<li>' . $product . '</li>';
             }
+
+            $message .= '</ul>';
+        } else {
+            $message = sprintf(
+                __( 'This content is restricted to buyers of %s.', 'edd_cr' ),
+                $products[0]
+            );
         }
 
         // Guests can't view restricted content... period
@@ -103,7 +106,7 @@ function edd_cr_filter_restricted_content( $content = '', $download_id = 0, $pri
         }
 
         // Allow extensions to modify the restriction conditions
-        $is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $post_id, $download_id, $user_ID, $price_id );
+        $is_restricted = apply_filters( 'edd_cr_is_restricted', $is_restricted, $restricted, $user_ID );
 
         $message = '<div class="edd_cr_message ' . $class . '">' . $message . '</div>';
 
