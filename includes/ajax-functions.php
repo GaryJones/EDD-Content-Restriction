@@ -23,8 +23,9 @@ function edd_cr_check_for_download_price_variations() {
         die( '-1' );
     }
 
-    $download_id = intval( $_POST['download_id'] );
-    $download = get_post( $download_id );
+    $download_id = absint( $_POST['download_id'] );
+    $key         = absint( $_POST['key'] );
+    $download    = get_post( $download_id );
     
     if( 'download' != $download->post_type ) {
         die( '-2' );
@@ -33,9 +34,9 @@ function edd_cr_check_for_download_price_variations() {
     if ( edd_has_variable_prices( $download_id ) ) {
         $variable_prices = edd_get_variable_prices( $download_id );
         if ( $variable_prices ) {
-            $ajax_response = '<select class="edd_price_options_select edd-select edd-select" name="edd_price_option">';
-            foreach ( $variable_prices as $key => $price ) {
-                $ajax_response .= '<option value="' . esc_attr( $key ) . '">' . esc_html( $price['name'] ) . '</option>';
+            $ajax_response = '<select class="edd_price_options_select edd-select edd-select" name="edd_cr_download[' . $key . '][price_id]">';
+            foreach ( $variable_prices as $price_id => $price ) {
+                $ajax_response .= '<option value="' . esc_attr( $price_id ) . '">' . esc_html( $price['name'] ) . '</option>';
             }
             $ajax_response .= '</select>';
             echo $ajax_response;
@@ -45,3 +46,4 @@ function edd_cr_check_for_download_price_variations() {
     edd_die();
 }
 add_action( 'wp_ajax_edd_cr_check_for_download_price_variations', 'edd_cr_check_for_download_price_variations' );
+
