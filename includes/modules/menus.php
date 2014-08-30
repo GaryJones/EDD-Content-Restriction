@@ -16,22 +16,10 @@ function edd_cr_hide_menu_items( $items, $args ) {
         foreach( $items as $item_id => $item_data ) {
             $restricted = edd_cr_is_restricted( $item_data->object_id );
 
-            if( ! empty( $restricted ) && ! current_user_can( 'edit_post', $item_data->object_id ) ) {
-                foreach( $restricted as $item => $data ) {
-                    if( edd_has_variable_prices( $data['download'] ) ) {
-                        if( $data['price_id'] != 'ALL' ) {
-                            $purchased = edd_has_user_purchased( get_current_user_id(), $data['download'], $data['price_id'] );
-                        } else {
-                            $purchased = edd_has_user_purchased( get_current_user_id(), $data['download'] );
-                        }
-                    } else {
-                        $purchased = edd_has_user_purchased( get_current_user_id(), $data['download'] );
-                    }
-                }
+            $has_access = edd_cr_user_can_access( get_current_user_id(), $restricted, $item_data->object_id );
 
-                if( ! $purchased ) {
-                    unset( $items[$item_id] );
-                }
+            if( $has_access['status'] == false ) {
+                unset( $items[$item_id] );
             }
         }
     }

@@ -24,7 +24,7 @@ function edd_cr_check_for_download_price_variations() {
     }
 
     $download_id = absint( $_POST['download_id'] );
-    $key         = absint( $_POST['key'] );
+    $key         = ( isset( $_POST['key'] ) ? absint( $_POST['key'] ) : 0 );
     $download    = get_post( $download_id );
     
     if( 'download' != $download->post_type ) {
