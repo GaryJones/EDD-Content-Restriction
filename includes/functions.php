@@ -31,7 +31,28 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
         $user_id = get_current_user_id();
     }
 
-    if( $restricted_to ) {
+    // bbPress specific checks
+    if( class_exists( 'bbPress' ) ) {
+                
+        // Moderators can see everything
+        if( current_user_can( 'moderate' ) ) {
+            $has_access = true;
+        }
+    }
+
+    // Admins have full access
+    if( current_user_can( 'manage_options' ) ) {
+        $has_access = true;
+    }
+
+    // The post author can always access
+    if( $post_id ) {
+        if( current_user_can( 'edit_post', $post_id ) ) {
+            $has_access = true;
+        }
+    }
+
+    if( $restricted_to && $has_access == false ) {
         foreach( $restricted_to as $item => $data ) {
 
             // Check for variable prices
@@ -60,21 +81,6 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
             // The author of a download always has access
             if( (int) get_post_field( 'post_author', $data['download'] ) ===  $user_id ) {
                 $has_access = true;
-            }
-
-            if( $post_id ) {
-                if( current_user_can( 'edit_post', $post_id ) ) {
-                    $has_access = true;
-                }
-            }
-
-            // bbPress specific checks
-            if( class_exists( 'bbPress' ) ) {
-                
-                // Moderators can see everything
-                if( current_user_can( 'moderate' ) ) {
-                    $has_access = true;
-                }
             }
         }
 
