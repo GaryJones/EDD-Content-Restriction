@@ -15,7 +15,7 @@ if( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Register meta box
  *
- * @since       1.6.0
+ * @since       2.0
  * @global      object $post The post/page we are editing
  * @return      void
  */
@@ -42,7 +42,7 @@ add_action( 'add_meta_boxes', 'edd_cr_add_meta_box' );
 /**
  * Render metabox
  *
- * @since       1.6.0
+ * @since       2.0
  * @global      object $post The post/page we are editing
  * @return      void
  */
@@ -96,7 +96,7 @@ function edd_cr_render_meta_box( $post_id ) {
  * Used to output a table row for each download.
  * Can be called directly, or attached to an action.
  *
- * @since       1.6.0
+ * @since       2.0
  * @param       object $post The post we are editing
  */
 function edd_cr_render_option_row( $key, $post ) {

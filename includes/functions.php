@@ -15,7 +15,7 @@ if( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Check to see if a user has access to a post/page
  *
- * @since       1.6.0
+ * @since       2.0
  * @param       int $user_id The ID of the user to check
  * @param       array $restricted_to The array of downloads for a post/page
  * @param       int $post_id The ID of the object we are viewing

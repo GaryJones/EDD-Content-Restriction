@@ -15,7 +15,7 @@ if( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Check for download price variations
  *
- * @since       1.6.0
+ * @since       2.0
  * @return      void
  */
 function edd_cr_check_for_download_price_variations() {
