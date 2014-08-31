@@ -65,7 +65,7 @@ function edd_cr_render_meta_box( $post_id ) {
                 </thead>
                 <tbody>
                     <?php
-                        if( ! empty( $restricted_to && is_array( $restricted_to ) ) ) {
+                        if( ! empty( $restricted_to ) && is_array( $restricted_to ) ) {
                             foreach( $restricted_to as $key => $value ) {
                                 echo '<tr class="edd-cr-option-wrapper edd_repeatable_row">';
                                 do_action( 'edd_cr_render_option_row', $key, $post_id );
