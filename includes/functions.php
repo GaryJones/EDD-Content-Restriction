@@ -54,14 +54,26 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
 
     if( $restricted_to && $has_access == false ) {
         foreach( $restricted_to as $item => $data ) {
+            // The author of a download always has access
+            if( (int) get_post_field( 'post_author', $data['download'] ) ===  $user_id ) {
+                $has_access = true;
+            }
 
             // Check for variable prices
-            if( edd_has_variable_prices( $data['download'] ) ) {
-                if( $data['price_id'] != 'ALL' ) {
-                    $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . ' - ' . edd_get_price_option_name( $data['download'], $data['price_id'] ) . '</a>';
+            if( $has_access == false ) {
+                if( edd_has_variable_prices( $data['download'] ) ) {
+                    if( $data['price_id'] != 'ALL' ) {
+                        $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . ' - ' . edd_get_price_option_name( $data['download'], $data['price_id'] ) . '</a>';
 
-                    if( edd_has_user_purchased( $user_id, $data['download'], $data['price_id'] ) ) {
-                        $has_access = true;
+                        if( edd_has_user_purchased( $user_id, $data['download'], $data['price_id'] ) ) {
+                            $has_access = true;
+                        }
+                    } else {
+                        $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . '</a>';
+
+                        if( edd_has_user_purchased( $user_id, $data['download'] ) ) {
+                            $has_access = true;
+                        }
                     }
                 } else {
                     $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . '</a>';
@@ -70,17 +82,6 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
                         $has_access = true;
                     }
                 }
-            } else {
-                $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . '</a>';
-
-                if( edd_has_user_purchased( $user_id, $data['download'] ) ) {
-                    $has_access = true;
-                }
-            }
-
-            // The author of a download always has access
-            if( (int) get_post_field( 'post_author', $data['download'] ) ===  $user_id ) {
-                $has_access = true;
             }
         }
 
