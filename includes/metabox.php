@@ -102,14 +102,14 @@ function edd_cr_render_meta_box( $post_id ) {
 function edd_cr_render_option_row( $key, $post ) {
     $downloads      = get_posts( array( 'post_type' => 'download', 'posts_per_page' => -1 ) );
     $restricted_to  = get_post_meta( $post->ID, '_edd_cr_restricted_to', true );
-    $key            = isset( $restricted_to[$key]['download'] ) ? absint( $restricted_to[$key]['download'] ) : 0;
+    $download_id    = isset( $restricted_to[$key]['download'] ) ? absint( $restricted_to[$key]['download'] ) : 0;
     ?>
     <td>
         <select name="edd_cr_download[<?php echo $key; ?>][download]" id="edd_cr_download[<?php echo $key; ?>][download]" class="edd_cr_download" data-key="<?php echo esc_attr( $key ); ?>">
             <option value='' disabled selected style='display:none;'><?php echo sprintf( __( 'Select A %s'), edd_get_label_singular() ); ?></option>
             <?php
                 foreach ( $downloads as $download ) {
-                    echo '<option value="' . absint( $download->ID ) . '" ' . selected( $key, $download->ID, false ) . '>' . esc_html( get_the_title( $download->ID ) ) . '</option>';
+                    echo '<option value="' . absint( $download->ID ) . '" ' . selected( $download_id, $download->ID, false ) . '>' . esc_html( get_the_title( $download->ID ) ) . '</option>';
                 }
             ?>
         </select>
