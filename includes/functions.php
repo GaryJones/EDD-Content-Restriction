@@ -55,8 +55,9 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
     if( $restricted_to && $has_access == false ) {
         foreach( $restricted_to as $item => $data ) {
             // The author of a download always has access
-            if( (int) get_post_field( 'post_author', $data['download'] ) ===  $user_id ) {
+            if( (int) get_post_field( 'post_author', $data['download'] ) === (int) $user_id ) {
                 $has_access = true;
+                break;
             }
 
             // Check for variable prices
