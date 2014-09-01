@@ -63,7 +63,7 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
             // Check for variable prices
             if( $has_access == false ) {
                 if( edd_has_variable_prices( $data['download'] ) ) {
-                    if( $data['price_id'] != 'ALL' ) {
+                    if( strtolower( $data['price_id'] ) !== 'all' ) {
                         $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . ' - ' . edd_get_price_option_name( $data['download'], $data['price_id'] ) . '</a>';
 
                         if( edd_has_user_purchased( $user_id, $data['download'], $data['price_id'] ) ) {

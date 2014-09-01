@@ -119,10 +119,10 @@ function edd_cr_render_option_row( $key, $post ) {
             if( isset( $restricted_to[$key]['price_id'] ) ) {
                 $prices = get_post_meta( $restricted_to[$key]['download'], 'edd_variable_prices', true );
                 echo '<select class="edd_cr_download" name="edd_cr_download[' . $key . '][price_id]">';
-                echo '<option value="all" ' . selected( 'all', $restricted_to[$key]['price_id'], false ) . '>' . __( 'All Variants', 'edd_cr' ) . '</option>';
-                foreach ( $prices as $id => $data ) {
-                    echo '<option value="' . absint( $id ) . '" ' . selected( $id, $restricted_to[$key]['price_id'], false ) . '>' . esc_html( $data['name'] )  . '</option>';
-                }
+                    echo '<option value="all" ' . selected( 'all', $restricted_to[$key]['price_id'], false ) . '>' . __( 'All prices', 'edd_cr' ) . '</option>';
+                    foreach ( $prices as $id => $data ) {
+                        echo '<option value="' . absint( $id ) . '" ' . selected( $id, $restricted_to[$key]['price_id'], false ) . '>' . esc_html( $data['name'] )  . '</option>';
+                    }
                 echo '</select>';
                 echo '<p class="edd_cr_variable_none" style="display: none;">' . __( 'None', 'edd_cr' ) . '</p>';
             } else {
