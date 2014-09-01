@@ -209,7 +209,7 @@ function edd_cr_check_for_variations() {
                 $response .= '<option value="all">' . __( 'All Variants', 'edd_cr' ) . '</option>';
 
                 foreach( $prices as $key => $price ) {
-                    $response .= '<option value="' . $key . '">' . $price['name']  . '</option>';
+                    $response .= '<option value="' . esc_attr( $key ) . '">' . esc_html( $price['name'] )  . '</option>';
                 }
 
                 $response .= '</select>';
@@ -248,7 +248,7 @@ function edd_cr_add_to_receipt( $payment, $edd_receipt_args ) {
 
     foreach( $meta as $post ) {
         echo '<li>';
-        echo '<a href="' . get_permalink( $post->ID ) . '" class="edd_download_file_link">' . $post->post_title . '</a>';
+        echo '<a href="' . esc_url( get_permalink( $post->ID ) ) . '" class="edd_download_file_link">' . $post->post_title . '</a>';
         echo '</li>';
     }
 
@@ -290,7 +290,7 @@ function edd_cr_add_template_tags( $payment_id ) {
     $page_list .= '<ul>';
 
     foreach( $meta as $post ) {
-        $page_list .= '<li><a href="' . get_permalink( $post->ID ) . '">' . $post->post_title . '</a></li>';
+        $page_list .= '<li><a href="' . esc_url( get_permalink( $post->ID ) ) . '">' . $post->post_title . '</a></li>';
     }
 
     $page_list .= '</ul>';
