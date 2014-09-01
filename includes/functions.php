@@ -192,39 +192,6 @@ function edd_cr_is_restricted( $post_id ) {
 
 
 /**
- * Check post variations for restriction
- *
- * @since       1.0.0
- * @return      void
- */
-function edd_cr_check_for_variations() {
-    if ( isset( $_POST['nonce'] ) && wp_verify_nonce( $_POST['nonce'], 'edd-cr-nonce' ) ) {
-        $download_id = isset( $_POST['download_id'] ) ? absint( $_POST['download_id'] ) : 0;
-
-        if ( edd_has_variable_prices( $download_id ) ) {
-            $prices = get_post_meta( $download_id, 'edd_variable_prices', true );
-
-            if( $prices ) {
-                $response  = '<select name="edd_cr_download_price">';
-                $response .= '<option value="all">' . __( 'All Variants', 'edd_cr' ) . '</option>';
-
-                foreach( $prices as $key => $price ) {
-                    $response .= '<option value="' . esc_attr( $key ) . '">' . esc_html( $price['name'] )  . '</option>';
-                }
-
-                $response .= '</select>';
-            }
-
-            echo $response;
-        }
-    }
-
-    die();
-}
-add_action( 'wp_ajax_edd_cr_check_for_variations', 'edd_cr_check_for_variations' );
-
-
-/**
  * Add restricted content to confirmation page
  *
  * @since       1.3.0
