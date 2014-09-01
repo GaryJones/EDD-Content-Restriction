@@ -1,0 +1,30 @@
+#edd-cr-options {
+	margin: 0 0 8px;
+}
+
+.edd-cr-receipt {
+	margin: 0;
+	padding: 0;
+}
+
+.edd-cr-receipt li {
+	list-style: none;
+	margin: 0 0 8px 10px;
+}
+
+.edd-cr-option-wrapper td {
+	width: 48%;
+	vertical-align: text-bottom;
+}
+
+.edd-cr-option-wrapper td select {
+	width: 100%;
+}
+
+.edd-cr-option-wrapper p {
+	display: inline-block;
+}
+
+.edd_cr_loading {
+	vertical-align: text-bottom;
+}
