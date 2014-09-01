@@ -106,7 +106,7 @@ function edd_cr_render_option_row( $key, $post ) {
     ?>
     <td>
         <select name="edd_cr_download[<?php echo $key; ?>][download]" id="edd_cr_download[<?php echo $key; ?>][download]" class="edd_cr_download" data-key="<?php echo esc_attr( $key ); ?>">
-            <option value='' disabled selected style='display:none;'><?php echo sprintf( __( 'Select A %s'), edd_get_label_singular() ); ?></option>
+            <option value=""><?php echo sprintf( __( 'Select A %s'), edd_get_label_singular() ); ?></option>
             <?php
                 foreach ( $downloads as $download ) {
                     echo '<option value="' . absint( $download->ID ) . '" ' . selected( $download_id, $download->ID, false ) . '>' . esc_html( get_the_title( $download->ID ) ) . '</option>';
