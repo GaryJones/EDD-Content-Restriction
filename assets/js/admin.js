@@ -33,6 +33,9 @@ jQuery(document).ready(function ($) {
             });
 
             $this.parent().next().find('.edd_cr_loading').hide();
+        } else {
+            $this.parent().next('td').find('.edd_cr_variable_none').show();   
+            $this.parent().next('td').find('.edd_price_options_select').remove();   
         }
     });
 });
