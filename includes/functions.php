@@ -33,7 +33,7 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
 
     // bbPress specific checks
     if( class_exists( 'bbPress' ) ) {
-                
+
         // Moderators can see everything
         if( current_user_can( 'moderate' ) ) {
             $has_access = true;
@@ -55,23 +55,33 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
     if( $restricted_to && $has_access == false ) {
 
         foreach( $restricted_to as $item => $data ) {
+
             // The author of a download always has access
             if( (int) get_post_field( 'post_author', $data['download'] ) === (int) $user_id ) {
                 $has_access = true;
                 break;
             }
 
+            // If restricted to any customer and user has purchased something
+            if( 'any' === $data['download'] && edd_has_purchases( $user_id ) ) {
+                $has_access  = true;
+                break;
+            } elseif( 'any' === $data['download'] ) {
+                $products[0] = __( 'any product', 'edd_cr' );
+            }
+
             // Check for variable prices
             if( $has_access == false ) {
-               
+
                 if( edd_has_variable_prices( $data['download'] ) ) {
-                   
+
                     if( strtolower( $data['price_id'] ) !== 'all' && ! empty( $data['price_id'] ) ) {
                         $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . ' - ' . edd_get_price_option_name( $data['download'], $data['price_id'] ) . '</a>';
 
                         if( edd_has_user_purchased( $user_id, $data['download'], $data['price_id'] ) ) {
                             $has_access = true;
                         }
+
                     } else {
                         $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . '</a>';
 
@@ -79,41 +89,60 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
                             $has_access = true;
                         }
                     }
+
                 } else {
+
                     $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . '</a>';
 
                     if( edd_has_user_purchased( $user_id, $data['download'] ) ) {
                         $has_access = true;
                     }
                 }
+
             }
+
         }
 
         if( $has_access == false ) {
-            if( $restricted_count > 1 ) {
-                $message  = __( 'This content is restricted to buyers of:', 'edd_cr' );
-                $message .= '<ul>';
 
-                foreach( $products as $id => $product ) {
-                    $message .= '<li>' . $product . '</li>';
+            if( $restricted_count > 1 ) {
+
+                $message  = __( 'This content is restricted to buyers of:', 'edd_cr' );
+
+                if( ! empty( $products ) ) {
+
+                    $message .= '<ul>';
+
+                    foreach( $products as $id => $product ) {
+                        $message .= '<li>' . $product . '</li>';
+                    }
+
+                    $message .= '</ul>';
+
                 }
 
-                $message .= '</ul>';
             } else {
+
                 $message = sprintf(
                     __( 'This content is restricted to buyers of %s.', 'edd_cr' ),
                     $products[0]
                 );
+
             }
+
         }
 
         if( isset( $message ) ) {
+
             $return['message'] = $message;
+
         }
+
     } else {
 
         // Just in case we're checking something unrestricted...
         $has_access = true;
+
     }
 
     // Allow plugins to modify the restriction requirements
