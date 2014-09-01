@@ -30,8 +30,20 @@ function edd_cr_restrict_shortcode( $atts, $content = null ) {
 
 
     if( ! is_null( $atts['id'] ) ) {
-        $ids        = explode( ',', $atts['id'] );
-        $content    = edd_cr_filter_restricted_content( $content, $ids, $atts['price_id'], $atts['message'], 0, $atts['class'] );
+        
+        $ids = explode( ',', $atts['id'] );
+
+        $restricted_to = array();
+        foreach( $ids as $download_id ) {
+
+            $restricted_to[] = array(
+                'download' => $download_id,
+                'price_id' => $atts['price_id']
+            );
+
+        }
+
+        $content = edd_cr_filter_restricted_content( $content, $restricted_to, $atts['message'], 0, $atts['class'] );
     }
 
     return $content;

@@ -34,7 +34,7 @@ function edd_cr_check_for_download_price_variations() {
     if ( edd_has_variable_prices( $download_id ) ) {
         $variable_prices = edd_get_variable_prices( $download_id );
         if ( $variable_prices ) {
-            $ajax_response = '<select class="edd_price_options_select edd-select edd-select" name="edd_cr_download[' . $key . '][price_id]">';
+            $ajax_response = '<select class="edd_price_options_select edd-select edd-select edd_cr_download" name="edd_cr_download[' . $key . '][price_id]">';
                 $ajax_response .= '<option value="all">' . esc_html( __( 'All prices', 'edd_cr' ) ) . '</option>';
                 foreach ( $variable_prices as $price_id => $price ) {
                     $ajax_response .= '<option value="' . esc_attr( $price_id ) . '">' . esc_html( $price['name'] ) . '</option>';

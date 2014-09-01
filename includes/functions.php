@@ -53,6 +53,7 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
     }
 
     if( $restricted_to && $has_access == false ) {
+
         foreach( $restricted_to as $item => $data ) {
             // The author of a download always has access
             if( (int) get_post_field( 'post_author', $data['download'] ) === (int) $user_id ) {
@@ -62,8 +63,10 @@ function edd_cr_user_can_access( $user_id = false, $restricted_to, $post_id = fa
 
             // Check for variable prices
             if( $has_access == false ) {
+               
                 if( edd_has_variable_prices( $data['download'] ) ) {
-                    if( strtolower( $data['price_id'] ) !== 'all' ) {
+                   
+                    if( strtolower( $data['price_id'] ) !== 'all' && ! empty( $data['price_id'] ) ) {
                         $products[] = '<a href="' . get_permalink( $data['download'] ) . '">' . get_the_title( $data['download'] ) . ' - ' . edd_get_price_option_name( $data['download'], $data['price_id'] ) . '</a>';
 
                         if( edd_has_user_purchased( $user_id, $data['download'], $data['price_id'] ) ) {
@@ -166,9 +169,15 @@ function edd_cr_filter_restricted_content( $content = '', $restricted = false, $
 
     // If the current user can edit this post, it can't be restricted!
     if( ! current_user_can( 'edit_post', $post_id ) && $restricted ) {
+
         $has_access = edd_cr_user_can_access( $user_ID, $restricted, $post_id );
 
         if( $has_access['status'] == false ) {
+
+            if( ! empty( $message ) ) {
+                $has_access['message'] = $message;
+            }
+
             $content = $has_access['message'];
         }
     }
